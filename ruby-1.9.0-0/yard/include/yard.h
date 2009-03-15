@@ -7,6 +7,8 @@
 #include "common.h"
 #include "storage.h"
 
+#include "bdb.h"
+
 int __yard_started;
 
 #endif

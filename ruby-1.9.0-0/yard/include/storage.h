@@ -31,6 +31,7 @@ struct YardModificationResult {
   struct YardIdAssignment * id_assignments;
 };
 
+void initialize_local_storage(char * db_file_name);
 
 void replay_modification_result(struct YardModificationResult *);
 

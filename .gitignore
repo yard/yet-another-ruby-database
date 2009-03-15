@@ -5,3 +5,4 @@ ruby-1.9.0-0/win32/*.pdb
 ruby-1.9.0-0/win32/*.dll
 ruby-1.9.0-0/win32/yard/*.obj
 ruby-1.9.0-0/win32/.*.time
+ruby-1.9.0-0/win32/*.res

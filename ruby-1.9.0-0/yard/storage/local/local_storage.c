@@ -1,20 +1,45 @@
 #include "../../include/yard.h"
-#include "../../include/db.h"
 
+#include <time.h>
+#include <math.h>
+#include <string.h>
+
+static const char * VM_COOKIE_KEY = "sys_vm_cookie";
+static const char * VM_ID_KEY = "sys_vm_id";
 
 // this VM's cookie
 long LocalCookie = 0;
 // id counter used to compose IDs
 long __id_counter = 0;
 
+// forwarded declaration of stparge routine
 void __yard_local_persist_object(VALUE object, struct YardModificationResult * result);
 
+/*
+    Initializes the local cookie value, attempting to set it in such a way
+    that it's unqiue across multiple VMs.
+ */
+static void initialize_local_cookie() {
+  LocalCookie = 0;
+}
 
-DB * db;
+/*
+    Loads neccessary system variables like global variable ID table, cookie and id counter.
+ */
+static void load_system_variables() {
+  
+}
 
-void initialize_storage() {
-  db_create(&db, NULL, 0);
-  db->open(db, NULL, "my_db.db", NULL, DB_BTREE, DB_CREATE, 0);
+/*
+    Initiales the local storage taking care of setting a proper DB control,
+    updating default storage strategy and loading neccessary information.
+    
+    char * db_file_name: name of the DB file to create/load.   
+*/
+void initialize_local_storage(char * db_file_name) {
+  // set storage strategy
+  yard_storage_method = &yard_local_persist_objects;
+  start_storage();
 }
 
 /*

@@ -1,6 +1,6 @@
 #include "../../include/yard.h"
 
-YardStoreMethod yard_storage_method = &yard_local_persist_objects;
+YardStoreMethod yard_storage_method = NULL;
 
 /*
     Being given a nicely prepared structure, applies ID updates to the object graph.

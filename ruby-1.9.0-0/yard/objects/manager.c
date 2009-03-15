@@ -34,6 +34,8 @@ int yard_type_persistable(VALUE object) {
       
  */
 void launch_yard() {
+  // launch local storage engine
+  initialize_local_storage("default.db");
   // mark the yard engine as started
   __yard_started = 1;
 }

@@ -205,6 +205,7 @@ idSucc DATA
 idThrowState DATA
 idTimes DATA
 id__send__ DATA
+initialize_storage
 insn_make_insn_table
 insns_name_array
 invoke_Array_each_special_block
