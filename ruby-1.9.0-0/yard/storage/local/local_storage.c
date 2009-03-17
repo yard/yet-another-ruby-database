@@ -4,8 +4,9 @@
 #include <math.h>
 #include <string.h>
 
-static const char * VM_COOKIE_KEY = "sys_vm_cookie";
-static const char * VM_ID_KEY = "sys_vm_id";
+static const char * VM_ID_KEY = "__yard_id_counter";
+
+static const char * VM_GLOBAL_VARIABLES = "__vm_global_variables";
 
 // this VM's cookie
 long LocalCookie = 0;
@@ -27,7 +28,46 @@ static void initialize_local_cookie() {
     Loads neccessary system variables like global variable ID table, cookie and id counter.
  */
 static void load_system_variables() {
+  STORAGE_DATA id_data;
   
+  id_data = read_data(string_to_key(VM_ID_KEY));
+ 
+  if (id_data.data) {
+    __id_counter = *((long *)id_data.data);
+    free(id_data.data);
+  } 
+}
+
+/*
+    Saves the global variable being given its name and ID.
+ */
+static void save_global_variable(char * name, struct YID id) {
+  STORAGE_DATA data;
+  GLOBAL_VARIABLE variable;
+  
+  strcpy(variable.name, name);
+  variable.id = id;
+  
+  data.size = sizeof(GLOBAL_VARIABLE);
+  data.data = &variable;
+  
+  append_data(string_to_key(VM_GLOBAL_VARIABLES), data);
+}
+
+/*
+    Loads all the global variables it can find.
+ */
+static void load_global_variables() {
+  STORAGE_DATA * vars = read_multi_data(string_to_key(VM_GLOBAL_VARIABLES));
+  
+  printf("Printing out saved vars\n");
+  
+  while (vars->data) {
+    GLOBAL_VARIABLE * gvar = (GLOBAL_VARIABLE *)vars->data;
+    printf("%s (%d / %d)\n", gvar->name, gvar->id.id, gvar->id.cookie);
+    
+    vars += 1;
+  }
 }
 
 /*
@@ -40,6 +80,8 @@ void initialize_local_storage(char * db_file_name) {
   // set storage strategy
   yard_storage_method = &yard_local_persist_objects;
   start_storage();
+  load_system_variables();
+  load_global_variables();
 }
 
 /*
@@ -47,10 +89,16 @@ void initialize_local_storage(char * db_file_name) {
  */
 struct YID yard_new_identity() {
   struct YID result;
+  STORAGE_DATA data;
+  
   // our id generation approach is simple: be atomic and you don't have to worry about sync :)
   result.id = __id_counter++;
   result.cookie = LocalCookie;
-  
+ 
+  data.data = &__id_counter;
+  data.size = sizeof(long);
+  write_data(string_to_key(VM_ID_KEY), data);   
+   
   return result;
 }
 
@@ -114,6 +162,11 @@ struct YardModificationResult * yard_local_persist_objects(struct YardModificati
    
   // let's start saving objects from the very first one.
   __yard_local_persist_object(object, result);
+
+  // a global symbol has been defined -- let's save it
+  if (modification->operation == GV_SET) {
+    save_global_variable((char *)modification->arg, RBASIC(object)->yard_id);    
+  }
   
   return result; 
 }

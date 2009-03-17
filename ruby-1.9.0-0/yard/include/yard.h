@@ -10,5 +10,6 @@
 #include "bdb.h"
 
 int __yard_started;
+YardStoreMethod yard_storage_method;
 
 #endif

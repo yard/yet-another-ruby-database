@@ -111,6 +111,7 @@ _stat64=rb_w32_stati64
 _stati64=rb_w32_stati64
 accept@12=_rb_w32_accept@12
 acosh
+append_data
 asinh
 atanh
 bind@12=_rb_w32_bind@12
@@ -118,7 +119,6 @@ chown
 close=rb_w32_close
 connect@12=_rb_w32_connect@12
 crypt
-db DATA
 debug_print_post
 debug_print_pre
 debug_print_register
@@ -205,7 +205,7 @@ idSucc DATA
 idThrowState DATA
 idTimes DATA
 id__send__ DATA
-initialize_storage
+initialize_local_storage
 insn_make_insn_table
 insns_name_array
 invoke_Array_each_special_block
@@ -224,6 +224,7 @@ launch_yard
 link
 listen@8=_rb_w32_listen@8
 log2
+long_to_key
 mkdir=rb_w32_mkdir
 nodeline
 nodetype
@@ -1276,6 +1277,8 @@ rb_yield_splat
 rb_yield_values
 rb_yield_values2
 read=rb_w32_read
+read_data
+read_multi_data
 recv@16=_rb_w32_recv@16
 recvfrom@24=_rb_w32_recvfrom@24
 rename=rb_w32_rename
@@ -1396,10 +1399,12 @@ st_numhash
 st_reverse_foreach
 stack_dump_each
 stack_dump_th
+start_storage
 stat=rb_w32_stat
 stati64=rb_w32_stati64
 strcasecmp=msvcrt.stricmp
 strerror=rb_w32_strerror
+string_to_key
 strlcat
 strlcpy
 strncasecmp=msvcrt.strnicmp
@@ -1442,6 +1447,7 @@ vsnprintf=rb_w32_vsnprintf
 wait
 waitpid
 write=rb_w32_write
+write_data
 yard_apply_modification
 yard_local_persist_objects
 yard_new_identity

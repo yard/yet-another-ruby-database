@@ -12,9 +12,3 @@ $a << Klass.new(1,1)
 p $a.yard_id
 p $a.last.yard_id
 
-$b = [$a]
-
-p $a.yard_id
-p $a.last.yard_id
-p $b.yard_id
-
