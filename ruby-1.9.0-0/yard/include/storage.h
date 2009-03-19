@@ -1,4 +1,4 @@
-#include "yard.h"
+  #include "yard.h"
 
 /*
  * The structure represents an internal change being performed on some object.

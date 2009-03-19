@@ -27,9 +27,12 @@ enum yard_modification_ops {
   // hash element removal
   HASH_ELEMENT_REMOVAL = 0x07,
 #define YARD_HASH_ELEMENT_REMOVAL HASH_ELEMENT_REMOVAL
-  // global variable defined
-  GV_SET = 0x08
+  // global variable assigned
+  GV_SET = 0x08,
 #define YARD_GV_SET GV_SET
+  // global variable assigned
+  GV_DEFINED = 0x09
+#define YARD_GV_DEFINED GV_DEFINED
 };
 
 VALUE rb_yard_id(VALUE);

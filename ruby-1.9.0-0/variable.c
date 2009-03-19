@@ -343,6 +343,9 @@ rb_global_entry(ID id)
       var->trace = 0;
       
       st_add_direct(rb_global_tbl, id, (st_data_t)entry);
+      
+      //printf(":((((\n");
+      yard_object_modification(NULL, NULL, YARD_GV_DEFINED, rb_id2name(id));
     }
     else {
       entry = (struct global_entry *)data;
@@ -444,13 +447,17 @@ global_id(const char *name)
 {
     ID id;
 
-    if (name[0] == '$') id = rb_intern(name);
-    else {
+    if (name[0] == '$') {
+      id = rb_intern(name);
+    } else {
       char *buf = ALLOCA_N(char, strlen(name)+2);
       buf[0] = '$';
       strcpy(buf+1, name);
       id = rb_intern(buf);
     }
+    
+    
+    
     return id;
 }
 

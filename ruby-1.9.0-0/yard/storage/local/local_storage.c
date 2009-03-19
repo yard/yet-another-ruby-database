@@ -103,6 +103,23 @@ struct YID yard_new_identity() {
 }
 
 /*
+    Is used to walk the Hash structure and persist everything it can found.
+    
+    VALUE key: key element, probably persistable.
+    VALUE value: value elemement, probably persistable.
+    struct YardModificationResult * result: our "logger" structure.
+ */
+static int __hash_persister(VALUE key, VALUE value, struct YardModificationResult * result) {
+  // just save key
+  __yard_local_persist_object(key, result);  
+  // and value
+  __yard_local_persist_object(value, result);
+  
+  // move to the next pair
+  return ST_CONTINUE;
+}
+
+/*
     Just an iterator routine which walks the instance variable list and saves everything it finds.
     
     ID iv_name: instance variable's name.
@@ -115,7 +132,6 @@ int __yard_process_associated(ID iv_name, VALUE val, st_data_t arg) {
   return 0;
 }
 
-
 /*
     Stores a given object tracking the history of id assignemnts to be replayed.
     
@@ -124,6 +140,7 @@ int __yard_process_associated(ID iv_name, VALUE val, st_data_t arg) {
  */
 void __yard_local_persist_object(VALUE object, struct YardModificationResult * result) {
   struct YardIdAssignment * assignment = NULL;
+  int i = 0;
   
   // nop in case of scalar type
   if (!yard_type_persistable(object)) {
@@ -142,12 +159,25 @@ void __yard_local_persist_object(VALUE object, struct YardModificationResult * r
     
   // attach identity assignment token to the end of linked list
   if (result->id_assignments != NULL) {
-    result->id_assignments->next = assignment;
-  } else {
-    result->id_assignments = assignment;
-  }
+    assignment->next = result->id_assignments;
+  } 
+  
+  result->id_assignments = assignment;
   
   rb_ivar_foreach(object, &__yard_process_associated, (st_data_t)result);
+  
+  // if the object is an Array, we have to save all its elements as well
+  if (BUILTIN_TYPE(object) == RUBY_T_ARRAY) {
+    for(i = 0; i < RARRAY_LEN(object); i++) {
+      // perform save for every element
+      __yard_local_persist_object(RARRAY_PTR(object)[i], result);  
+    }
+  }
+  
+  // if the object is an Hash, we have to save all its keys and values
+  if (BUILTIN_TYPE(object) == RUBY_T_HASH) {
+    st_foreach(RHASH_TBL(object), &__hash_persister, result);
+  }
 }
 
 /*
@@ -158,13 +188,19 @@ void __yard_local_persist_object(VALUE object, struct YardModificationResult * r
 struct YardModificationResult * yard_local_persist_objects(struct YardModification * modification) {
   VALUE object = modification->data;
   struct YardModificationResult * result = (struct YardModificationResult *)malloc(sizeof(struct YardModificationResult));
+ 
+  if (modification->operation == YARD_GV_DEFINED) {
+    printf("WOW: %s", modification->arg);
+    return;
+  } 
+  
   result->id_assignments = NULL;
    
   // let's start saving objects from the very first one.
   __yard_local_persist_object(object, result);
 
   // a global symbol has been defined -- let's save it
-  if (modification->operation == GV_SET) {
+  if (modification->operation == YARD_GV_SET) {
     save_global_variable((char *)modification->arg, RBASIC(object)->yard_id);    
   }
   
