@@ -9,7 +9,11 @@
 // BDB environment control structure
 static DB_ENV * db_env = NULL;
 // BDB storage engine
-static DB * db = NULL;
+static DB ** dbs = NULL;
+
+static char * OBJECT_SPACE_DB_NAME = "objectspace";
+static char * GLOBAL_NAMES_DB_NAME = "namespace";
+static char * SYSTEM_DB_NAME = "system";
 
 /*
     Allocates and intializes DBT struct.
@@ -43,6 +47,20 @@ STORAGE_KEY * string_to_key(char * key) {
 }
 
 /*
+    Converts the given YID structure into DBT structure to be used as a key.
+    
+    char * key: key to use.
+ */
+STORAGE_KEY * yid_to_key(struct YID * key) {
+  STORAGE_KEY * result = (STORAGE_KEY *)allocate_dbt();
+  
+  result->data = key;
+  result->size = sizeof(struct YID);
+  
+  return result;
+}
+
+/*
     Converts the given long into DBT structure to be used as a key.
     
     long key: key to use.
@@ -57,6 +75,31 @@ STORAGE_KEY * long_to_key(long key) {
   return result;
 }
 
+static void init_single_db(DB ** db, DB_ENV * env, char * file_name, char * db_name) {
+  int result = 0;
+  DB_TXN * txn = NULL;
+  
+  // create the DB access structure
+  result = db_create(db, env, 0);
+
+  if (result != 0) {
+    //todo handle errors -- in what a way? 
+    printf("[BDB]: Can't create database: %d", result);
+  }
+
+  // start open transaction
+  env->txn_begin(env, NULL, &txn, 0);
+
+  // allow duplicate records
+  (*db)->set_flags(*db, DB_DUP);
+
+  // open the DB
+  (*db)->open(*db, txn, file_name, db_name, DB_BTREE, DB_CREATE | DB_THREAD, S_IRUSR | S_IWUSR);
+
+  // commit the open transcation
+  txn->commit(txn, 0);  
+}
+
 /*
     Starts the DBD storage engine and loads some auxilary items from it.
     
@@ -64,8 +107,9 @@ STORAGE_KEY * long_to_key(long key) {
  */
 static void start_bdb(char * db_file_name, char * db_home) {
   int result = 0;
-  DB_TXN * txn = NULL;
-
+  
+  dbs = malloc(5 * sizeof(DB *));
+  
   // initialize DB environment with transacations and multithreading
   result = db_env_create(&db_env, 0);
   
@@ -82,25 +126,9 @@ static void start_bdb(char * db_file_name, char * db_home) {
     printf("[BDB]: Can't open environment: %d", result);
   }
 
-  // create the DB access structure
-  result = db_create(&db, db_env, 0);
-
-  if (result != 0) {
-    //todo handle errors -- in what a way? 
-    printf("[BDB]: Can't create database: %d", result);
-  }
-
-  // start open transaction
-  db_env->txn_begin(db_env, NULL, &txn, 0);
-
-  // allow duplicate records
-  db->set_flags(db, DB_DUP);
-
-  // open the DB
-  db->open(db, txn, db_file_name, NULL, DB_BTREE, DB_CREATE | DB_THREAD, S_IRUSR | S_IWUSR);
-
-  // commit the open transcation
-  txn->commit(txn, 0);
+  init_single_db(dbs, db_env, db_file_name, OBJECT_SPACE_DB_NAME);
+  init_single_db(dbs + 1, db_env, db_file_name, GLOBAL_NAMES_DB_NAME);
+  init_single_db(dbs + 2, db_env, db_file_name, SYSTEM_DB_NAME);
 }
 
 /*
@@ -115,11 +143,41 @@ void start_storage() {
     
     DBT key: key to use.
  */
-static DBT * bdb_non_transactional_read(DBT * key) {
+static DBT * bdb_non_transactional_read(int schema, DBT * key) {
+  DB * db = dbs[schema];
   DBT * result = allocate_dbt();
   db->get(db, NULL, key, result, 0);
   
   return result;
+}
+
+/*  
+    Begins a transaction. The transaction object is returned as the result.
+ */
+STORAGE_TRANSACTION * begin_transaction() {
+  STORAGE_TRANSACTION * txn = NULL;
+  
+  db_env->txn_begin(db_env, NULL, &txn, 0);
+  
+  return txn;
+}
+
+/*
+    Commits the transaction passed as the only argument.
+    
+    STORAGE_TRANSACTION * txn: transaction object to commit.
+ */
+void commit_transaction(STORAGE_TRANSACTION * txn) {
+  txn->commit(txn, 0);
+}
+
+/*
+    Aborts the transaction passed as the only argument.
+    
+    STORAGE_TRANSACTION * txn: transaction object to abort.
+ */
+void abort_transaction(STORAGE_TRANSACTION * txn) {
+  txn->abort(txn, 0);
 }
 
 /*
@@ -132,8 +190,9 @@ static DBT * bdb_non_transactional_read(DBT * key) {
     DB_TXN * txn: a pointer to transaction to re-use.
     long flags: flags to use to store the record.
  */
-static void bdb_transactional_write(DBT * key, DBT * data, DB_TXN * txn, long flags) {
+static void bdb_transactional_write(int schema, DBT * key, DBT * data, DB_TXN * txn, long flags) {
   long put_result = 0;
+  DB * db = dbs[schema];
   DB_TXN * temp_txn = txn;
   DBC * cursor = NULL;
   DBT * temp = allocate_dbt();
@@ -168,11 +227,12 @@ static void bdb_transactional_write(DBT * key, DBT * data, DB_TXN * txn, long fl
 
 /*
     Reads out data from the BDB storage being given a string key.
-    
+  
+    int schema: schema to use.  
     STORAGE_STRING_KEY key: key to fetch data with.
  */
-STORAGE_DATA read_data(STORAGE_KEY * key) {
-  DBT * bdb_result = bdb_non_transactional_read(key);
+STORAGE_DATA read_data(int schema, STORAGE_KEY * key) {
+  DBT * bdb_result = bdb_non_transactional_read(schema, key);
   
   STORAGE_DATA result;
   
@@ -185,15 +245,17 @@ STORAGE_DATA read_data(STORAGE_KEY * key) {
 /*
     Performs a transactional write to BDB.
     
+    int schema: schema to use.
     STORAGE_KEY key: key to use.
     STORAGE_DATA data: data to write.
+    STORAGE_TRANSACTION * txn: transaction to use (NULL to omit).
  */
-void write_data(STORAGE_KEY * key, STORAGE_DATA data) {
+void write_data(int schema, STORAGE_KEY * key, STORAGE_DATA data, STORAGE_TRANSACTION * txn) {
   DBT * bdb_data = allocate_dbt();
    
   bdb_data->data = data.data; bdb_data->size = data.size;
   
-  bdb_transactional_write(key, bdb_data, NULL, DB_CURRENT);
+  bdb_transactional_write(schema, key, bdb_data, txn, DB_CURRENT);
   
   free_dbt(bdb_data);
 }
@@ -201,15 +263,17 @@ void write_data(STORAGE_KEY * key, STORAGE_DATA data) {
 /*  
     Writes a chunk of data appending it to previously save entries for the given key.
     
+    int schema: schema to use.
     STORAGE_KEY * key: key to append data to.
     STORAGE_DATA data: data to append.
+    STORAGE_TRANSACTION * txn: transaction to use (NULL to omit).
  */
-void append_data(STORAGE_KEY * key, STORAGE_DATA data) {
+void append_data(int schema, STORAGE_KEY * key, STORAGE_DATA data, STORAGE_TRANSACTION * txn) {
   DBT * bdb_data = allocate_dbt();
    
   bdb_data->data = data.data; bdb_data->size = data.size;
   
-  bdb_transactional_write(key, bdb_data, NULL, DB_KEYFIRST);
+  bdb_transactional_write(schema, key, bdb_data, txn, DB_KEYFIRST);
   
   free_dbt(bdb_data);
 }
@@ -218,10 +282,12 @@ void append_data(STORAGE_KEY * key, STORAGE_DATA data) {
     Reads out all the records stored under the given key and places them into a linked
     list structure.
     
+    int schema: schema to use.
     STORAGE_KEY * key: key to read records for.
  */
-STORAGE_DATA * read_multi_data(STORAGE_KEY * key) {
+STORAGE_DATA * read_multi_data(int schema, STORAGE_KEY * key) {
   DBC * cursor = NULL;
+  DB * db = dbs[schema];
   STORAGE_DATA * result = NULL;
   DBT * data = allocate_dbt();
   int i = 0;

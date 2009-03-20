@@ -1,6 +1,28 @@
 #include "../include/yard.h"
 
+#include "ruby/st.h"
+
 int __yard_started = 0;
+
+st_table * __yard_cache = NULL;
+
+static int st_yidcmp(st_data_t, st_data_t);
+static int st_yidhash(st_data_t);
+
+static const struct st_hash_type type_yidhash = {
+    st_yidcmp,
+    st_yidhash,
+};
+
+int st_yidcmp(st_data_t x, st_data_t y)
+{
+    return (((struct YID *)x)->id == ((struct YID *)y)->id) && (((struct YID *)x)->cookie == ((struct YID *)y)->cookie);
+}
+
+int st_yidhash(st_data_t id)
+{
+    return (int)(((struct YID *)id)->id << 16 + ((struct YID *)id)->cookie);
+}
 
 /*
   Checks if the passed object should be saved separately.
@@ -27,6 +49,37 @@ int yard_type_persistable(VALUE object) {
   return 1;
 }
 
+
+
+/*
+    Fetches a pointer to some data stored in yard symbol table.
+    
+    struct YID * yid: id to fetch the object by.
+ */
+void * yard_get_object_by_yid(struct YID * yid) {
+  void * result = NULL;
+  st_lookup(__yard_cache, yid, &result);    
+  
+  return result;
+}
+
+/*
+    Saves the given pointer to the symbol table.
+    
+    struct YID * yid: yid to use.
+    void * data: data to save.
+ */
+void yard_set_object_by_yid(struct YID * yid, void * data) {
+  st_insert(__yard_cache, yid, data);
+}
+
+/*
+    Initializes a hash to be used by YARD's cache.
+ */
+static void init_yard_cache() {
+  __yard_cache = st_init_table(&type_yidhash);
+}
+
 /*
     Starts up the YARD engine. It sets global flag __yard_started,
     should also initialize storage (if attached), networking, preload
@@ -34,6 +87,8 @@ int yard_type_persistable(VALUE object) {
       
  */
 void launch_yard() {
+  // launch yard object cache.
+  init_yard_cache();
   // launch local storage engine
   initialize_local_storage("default.db");
   // mark the yard engine as started

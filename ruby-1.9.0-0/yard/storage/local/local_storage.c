@@ -1,4 +1,5 @@
 #include "../../include/yard.h"
+#include "ruby/variable.h"
 
 #include <time.h>
 #include <math.h>
@@ -11,10 +12,12 @@ static const char * VM_GLOBAL_VARIABLES = "__vm_global_variables";
 // this VM's cookie
 long LocalCookie = 0;
 // id counter used to compose IDs
-long __id_counter = 0;
+long __id_counter = 1;
 
-// forwarded declaration of stparge routine
+// forwarded declaration of storage routine
 void __yard_local_persist_object(VALUE object, struct YardModificationResult * result);
+// forwarded declaration of identity generator
+static struct YID yard_new_identity();
 
 /*
     Initializes the local cookie value, attempting to set it in such a way
@@ -30,7 +33,7 @@ static void initialize_local_cookie() {
 static void load_system_variables() {
   STORAGE_DATA id_data;
   
-  id_data = read_data(string_to_key(VM_ID_KEY));
+  id_data = read_data(YARD_SYSTEM_SCHEMA, string_to_key(VM_ID_KEY));
  
   if (id_data.data) {
     __id_counter = *((long *)id_data.data);
@@ -40,34 +43,43 @@ static void load_system_variables() {
 
 /*
     Saves the global variable being given its name and ID.
+
+	  char * name: Name of the variable to define.
  */
-static void save_global_variable(char * name, struct YID id) {
+static void define_global_variable(char * name) {
   STORAGE_DATA data;
   GLOBAL_VARIABLE variable;
-  
-  strcpy(variable.name, name);
-  variable.id = id;
-  
-  data.size = sizeof(GLOBAL_VARIABLE);
-  data.data = &variable;
-  
-  append_data(string_to_key(VM_GLOBAL_VARIABLES), data);
+  STORAGE_TRANSACTION * txn = NULL;
 }
 
 /*
     Loads all the global variables it can find.
  */
 static void load_global_variables() {
-  STORAGE_DATA * vars = read_multi_data(string_to_key(VM_GLOBAL_VARIABLES));
+  STORAGE_DATA * vars = NULL;
+  struct global_entry * entry = NULL;
+  STORAGE_DATA ref;
   
   printf("Printing out saved vars\n");
   
-  while (vars->data) {
+  while (vars && vars->data) {
     GLOBAL_VARIABLE * gvar = (GLOBAL_VARIABLE *)vars->data;
-    printf("%s (%d / %d)\n", gvar->name, gvar->id.id, gvar->id.cookie);
     
-    vars += 1;
+    entry = rb_global_entry(gvar->name);
+
+    // next variable
+    vars++;
   }
+}
+
+/*
+    Saves the reference from global variable to the object given.
+    
+    char * name: name of the global variable to affect.
+    VALUE object: object to assign.
+ */
+static void assign_to_global_variable(char * name, VALUE object) {
+  STORAGE_DATA data;
 }
 
 /*
@@ -87,7 +99,7 @@ void initialize_local_storage(char * db_file_name) {
 /*
     Generates a new identity.
  */
-struct YID yard_new_identity() {
+static struct YID yard_new_identity() {
   struct YID result;
   STORAGE_DATA data;
   
@@ -97,7 +109,7 @@ struct YID yard_new_identity() {
  
   data.data = &__id_counter;
   data.size = sizeof(long);
-  write_data(string_to_key(VM_ID_KEY), data);   
+  write_data(YARD_SYSTEM_SCHEMA, string_to_key(VM_ID_KEY), data, NULL);   
    
   return result;
 }
@@ -189,20 +201,20 @@ struct YardModificationResult * yard_local_persist_objects(struct YardModificati
   VALUE object = modification->data;
   struct YardModificationResult * result = (struct YardModificationResult *)malloc(sizeof(struct YardModificationResult));
  
-  if (modification->operation == YARD_GV_DEFINED) {
-    printf("WOW: %s", modification->arg);
-    return;
-  } 
-  
   result->id_assignments = NULL;
    
+  // a global symbol has been defined -- let's try to define it
+  if (modification->operation == YARD_GV_SET) {
+    define_global_variable((char *)modification->arg);    
+  }
+
   // let's start saving objects from the very first one.
   __yard_local_persist_object(object, result);
-
-  // a global symbol has been defined -- let's save it
+ 
+  // a global variable has been assigned a value
   if (modification->operation == YARD_GV_SET) {
-    save_global_variable((char *)modification->arg, RBASIC(object)->yard_id);    
-  }
-  
+    assign_to_global_variable((char *)modification->arg, object);
+  } 
+   
   return result; 
 }

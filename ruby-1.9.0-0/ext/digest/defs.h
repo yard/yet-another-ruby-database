@@ -16,9 +16,7 @@
 # define __END_DECLS
 #endif
 
-#if defined(HAVE_INTTYPES_H)
-# include <inttypes.h>
-#elif !defined __CYGWIN__ || !defined __uint8_t_defined
+#if !defined __CYGWIN__ || !defined __uint8_t_defined
   typedef unsigned char uint8_t;
   typedef unsigned int  uint32_t;
 # if SIZEOF_LONG == 8

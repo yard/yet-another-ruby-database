@@ -39,9 +39,9 @@ void yard_object_modification(VALUE obj, VALUE val, enum yard_modification_ops o
   if (!__yard_started) {
     return;
   }
-  
-  // nop in case of non-persistent object
-  if (obj != NULL && !YARD_OBJECT_SAVED(obj)) {
+
+  // nop in case of non-persistent object (but not global variable definition)
+  if ((obj != NULL) && !YARD_OBJECT_SAVED(obj)) {
     return;
   }
   

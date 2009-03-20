@@ -477,6 +477,8 @@ const char *ruby_node_name(int node);
 struct global_entry {
     struct global_variable *var;
     ID id;
+    
+    struct YID ref;
 };
 
 #define GetProcPtr(obj, ptr) \

@@ -80,6 +80,7 @@ RUBY_FL_USER20 DATA
 Sleep@4=_rb_w32_Sleep@4
 _DllMain@12
 __id_counter DATA
+__yard_cache DATA
 __yard_local_persist_object
 __yard_process_associated
 __yard_started DATA
@@ -109,14 +110,17 @@ _rb_w32_shutdown@8
 _rb_w32_socket@12
 _stat64=rb_w32_stati64
 _stati64=rb_w32_stati64
+abort_transaction
 accept@12=_rb_w32_accept@12
 acosh
 append_data
 asinh
 atanh
+begin_transaction
 bind@12=_rb_w32_bind@12
 chown
 close=rb_w32_close
+commit_transaction
 connect@12=_rb_w32_connect@12
 crypt
 debug_print_post
@@ -757,6 +761,7 @@ rb_getc
 rb_gets
 rb_glob
 rb_global_entry
+rb_global_entry_defined
 rb_global_tbl DATA
 rb_global_variable
 rb_gv_get
@@ -1449,8 +1454,10 @@ waitpid
 write=rb_w32_write
 write_data
 yard_apply_modification
+yard_get_object_by_yid
 yard_local_persist_objects
-yard_new_identity
 yard_object_modification
+yard_set_object_by_yid
 yard_storage_method DATA
 yard_type_persistable
+yid_to_key

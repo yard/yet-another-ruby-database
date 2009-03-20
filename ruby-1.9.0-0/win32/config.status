@@ -8,7 +8,7 @@ s,@CPPFLAGS@, ,;t t
 s,@CXXFLAGS@,-MD -Zi -O2b2xg- -G6,;t t
 s,@FFLAGS@,,;t t
 s,@LDFLAGS@,,;t t
-s,@LIBS@,oldnames.lib user32.lib advapi32.lib shell32.lib ws2_32.lib ,;t t
+s,@LIBS@,oldnames.lib user32.lib advapi32.lib shell32.lib ws2_32.lib  ./../yard//storage/local/bdb/*.lib,;t t
 s,@exec_prefix@,${prefix},;t t
 s,@prefix@,/usr,;t t
 s,@program_transform_name@,s,$,,,;t t

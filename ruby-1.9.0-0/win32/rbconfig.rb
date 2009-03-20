@@ -28,7 +28,7 @@ module RbConfig
   CONFIG["CXXFLAGS"] = "-MD -Zi -O2b2xg- -G6"
   CONFIG["FFLAGS"] = ""
   CONFIG["LDFLAGS"] = ""
-  CONFIG["LIBS"] = "oldnames.lib user32.lib advapi32.lib shell32.lib ws2_32.lib "
+  CONFIG["LIBS"] = "oldnames.lib user32.lib advapi32.lib shell32.lib ws2_32.lib  ./../yard//storage/local/bdb/*.lib"
   CONFIG["exec_prefix"] = "$(prefix)"
   CONFIG["bindir"] = "$(exec_prefix)/bin"
   CONFIG["sbindir"] = "$(exec_prefix)/sbin"

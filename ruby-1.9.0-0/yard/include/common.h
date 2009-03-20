@@ -14,4 +14,7 @@
 
 #define YARD_OBJECT_SAVED(obj) (RBASIC(obj)->yard_flags & YARD_SAVED_OBJECT == YARD_SAVED_OBJECT)
 
+// checks whether the given global symbol is already defined in this VM
+int rb_global_entry_defined(ID id);
+
 #endif

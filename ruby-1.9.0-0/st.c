@@ -160,8 +160,8 @@ st_init_table_with_size(const struct st_hash_type *type, int size)
 
 #ifdef HASH_LOG
     if (init_st == 0) {
-	init_st = 1;
-	atexit(stat_col);
+	    init_st = 1;
+	    atexit(stat_col);
     }
 #endif
 
