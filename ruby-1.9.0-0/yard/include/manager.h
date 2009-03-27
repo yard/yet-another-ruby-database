@@ -1,3 +1,6 @@
+#ifndef _MANAGER_H_
+#define _MANAGER_H_
+
 void launch_yard();
 
 VALUE rb_yard_saved_object(VALUE);
@@ -32,9 +35,15 @@ enum yard_modification_ops {
 #define YARD_GV_SET GV_SET
 };
 
+int RUBY_TYPE_SIZES[];
+
 VALUE rb_yard_id(VALUE);
 
 void yard_object_modification(VALUE, VALUE, enum yard_modification_ops, VALUE);
 
-void * yard_get_object_by_yid(struct YID *);
-void yard_set_object_by_yid(struct YID *, void *);
+VALUE yard_get_object_by_yid(struct YID *);
+void yard_set_object_by_yid(struct YID *, VALUE);
+
+VALUE yard_resolve_stub(VALUE object);
+
+#endif /* _MANAGER_H_ */

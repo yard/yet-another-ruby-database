@@ -41,7 +41,7 @@ STORAGE_KEY * string_to_key(char * key) {
   STORAGE_KEY * result = (STORAGE_KEY *)allocate_dbt();
   
   result->data = key;
-  result->size = strlen(key);
+  result->size = strlen(key) + 1;
   
   return result;
 }
@@ -89,9 +89,6 @@ static void init_single_db(DB ** db, DB_ENV * env, char * file_name, char * db_n
 
   // start open transaction
   env->txn_begin(env, NULL, &txn, 0);
-
-  // allow duplicate records
-  (*db)->set_flags(*db, DB_DUP);
 
   // open the DB
   (*db)->open(*db, txn, file_name, db_name, DB_BTREE, DB_CREATE | DB_THREAD, S_IRUSR | S_IWUSR);
@@ -194,30 +191,13 @@ static void bdb_transactional_write(int schema, DBT * key, DBT * data, DB_TXN * 
   long put_result = 0;
   DB * db = dbs[schema];
   DB_TXN * temp_txn = txn;
-  DBC * cursor = NULL;
-  DBT * temp = allocate_dbt();
   
   if (txn == NULL) {
     db_env->txn_begin(db_env, NULL, &temp_txn, 0);
   }
-    
-  db->cursor(db, temp_txn, &cursor, 0);
   
-  // let's check whether to add entry to a chain or just start a new chain
-  put_result = cursor->c_get(cursor, key, temp, DB_SET);
-  if (put_result == 0) {
-    // got such record -- append/replace
-    cursor->c_put(cursor, key, data, flags);
-  } else {
-    // no such record -- just add
-    cursor->c_put(cursor, key, data, DB_KEYFIRST);
-  }
-  
-  // we need to close the cursor in any way :)
-  cursor->c_close(cursor);  
-  
-  // and free dbt structure
-  free_dbt(temp);
+  data->flags = key->flags = 0;
+  db->put(db, temp_txn, key, data, flags);  
   
   // if the transaction is our, commit it
   if (txn == NULL) {
@@ -231,15 +211,8 @@ static void bdb_transactional_write(int schema, DBT * key, DBT * data, DB_TXN * 
     int schema: schema to use.  
     STORAGE_STRING_KEY key: key to fetch data with.
  */
-STORAGE_DATA read_data(int schema, STORAGE_KEY * key) {
-  DBT * bdb_result = bdb_non_transactional_read(schema, key);
-  
-  STORAGE_DATA result;
-  
-  result.data = bdb_result->data;
-  result.size = bdb_result->size;
-  
-  return result;
+STORAGE_DATA * read_data(int schema, STORAGE_KEY * key) {
+  return bdb_non_transactional_read(schema, key);
 }
 
 /*
@@ -250,85 +223,49 @@ STORAGE_DATA read_data(int schema, STORAGE_KEY * key) {
     STORAGE_DATA data: data to write.
     STORAGE_TRANSACTION * txn: transaction to use (NULL to omit).
  */
-void write_data(int schema, STORAGE_KEY * key, STORAGE_DATA data, STORAGE_TRANSACTION * txn) {
-  DBT * bdb_data = allocate_dbt();
-   
-  bdb_data->data = data.data; bdb_data->size = data.size;
-  
-  bdb_transactional_write(schema, key, bdb_data, txn, DB_CURRENT);
-  
-  free_dbt(bdb_data);
-}
-
-/*  
-    Writes a chunk of data appending it to previously save entries for the given key.
-    
-    int schema: schema to use.
-    STORAGE_KEY * key: key to append data to.
-    STORAGE_DATA data: data to append.
-    STORAGE_TRANSACTION * txn: transaction to use (NULL to omit).
- */
-void append_data(int schema, STORAGE_KEY * key, STORAGE_DATA data, STORAGE_TRANSACTION * txn) {
-  DBT * bdb_data = allocate_dbt();
-   
-  bdb_data->data = data.data; bdb_data->size = data.size;
-  
-  bdb_transactional_write(schema, key, bdb_data, txn, DB_KEYFIRST);
-  
-  free_dbt(bdb_data);
+void write_data(int schema, STORAGE_KEY * key, STORAGE_DATA * data, STORAGE_TRANSACTION * txn) {
+  bdb_transactional_write(schema, key, data, txn, 0);
 }
 
 /*
-    Reads out all the records stored under the given key and places them into a linked
-    list structure.
+    Reads all the records from the schema given.
     
-    int schema: schema to use.
-    STORAGE_KEY * key: key to read records for.
+    int schema: schema to read out records from.
  */
-STORAGE_DATA * read_multi_data(int schema, STORAGE_KEY * key) {
+STORAGE_PAIR * enumerate_records(int schema) {
   DBC * cursor = NULL;
   DB * db = dbs[schema];
-  STORAGE_DATA * result = NULL;
-  DBT * data = allocate_dbt();
-  int i = 0;
-  int ret = 0;
   db_recno_t record_count = 0;
+  STORAGE_PAIR * result = NULL;
+  DBT * key = allocate_dbt(), * value = allocate_dbt();
   
   // initialize a cursor
   db->cursor(db, NULL, &cursor, 0);
   
-  // point the cursor to the first duplicate
-  ret = cursor->c_get(cursor, key, data, DB_SET);
+  // put the cursor to the first record
+  cursor->c_get(cursor, key, value, DB_FIRST);
   
-  if (ret == 0) {
-    // count records associated with the cursor
-    cursor->c_count(cursor, &record_count, 0);
-     
-    // allocate memory for result and intermediate data
-    result = (STORAGE_DATA *)malloc(sizeof(STORAGE_DATA) * record_count + 1);  
-    
-    // let's do it record_count times
-    for(i = 0; i < record_count; i++) {  
-      // save the data to results    
-      result[i].data = data->data;
-      result[i].size = data->size;
-      
-      // fetch next duplicate
-      cursor->c_get(cursor, key, data, DB_NEXT_DUP);
-    } 
-   
-    // mark the last result (c-style, I know)
-    // btw, can you propose anything better? it's quite late and I'm kinda slow now :(
-    // while proposing a brand new approach, please ensure it's O(n) with good constants; here we have 1
-    result[record_count].data = 0;
-  } else {
-    result = NULL;
+  // count the records
+  cursor->c_count(cursor, &record_count, 0);
+ 
+  result = (STORAGE_PAIR *)malloc(sizeof(STORAGE_PAIR) * (record_count + 1));
+  memset(result, 0, sizeof(STORAGE_PAIR) * (record_count + 1));
+  
+  result[record_count].tag = 1;
+  
+  // if we have records...
+  if (record_count > 0) {
+    record_count--;
+    // read the first...
+    cursor->c_get(cursor, &result[record_count].key, &result[record_count].data, DB_FIRST);
   }
   
-  free_dbt(data);
+  // and loop through others
+  for(; record_count > 0; record_count--) {
+    cursor->c_get(cursor, &result[record_count - 1].key, &result[record_count - 1].data, DB_NEXT);
+  }
 
-  // free cursor 
-  cursor->c_close(cursor);   
-  
+  cursor->c_close(cursor);
+
   return result;
 }

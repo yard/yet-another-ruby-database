@@ -1,13 +1,8 @@
 #include "db.h"
 #include "ruby.h"
 
-struct __storage_data {
-  void * data;
-  long size;
-};
-
 typedef struct __db_dbt STORAGE_KEY;
-typedef struct __storage_data STORAGE_DATA;
+typedef struct __db_dbt STORAGE_DATA;
 
 typedef DB_TXN STORAGE_TRANSACTION;
 
@@ -17,6 +12,14 @@ struct __global_variable {
 };
 
 typedef struct __global_variable GLOBAL_VARIABLE;
+
+struct __storage_pair {
+  int tag;
+  STORAGE_KEY key;
+  STORAGE_DATA data;
+};
+
+typedef struct __storage_pair STORAGE_PAIR;
 
 enum storage_schemas {
   OBJECT_SPACE = 0x00,
@@ -30,10 +33,9 @@ enum storage_schemas {
 // the routine used to start the storage
 void start_storage();
 
-STORAGE_DATA read_data(int, STORAGE_KEY *);
-void write_data(int, STORAGE_KEY *, STORAGE_DATA, STORAGE_TRANSACTION *);
-void append_data(int, STORAGE_KEY *, STORAGE_DATA, STORAGE_TRANSACTION *);
-STORAGE_DATA * read_multi_data(int, STORAGE_KEY *);
+STORAGE_DATA * read_data(int, STORAGE_KEY *);
+void write_data(int, STORAGE_KEY *, STORAGE_DATA *, STORAGE_TRANSACTION *);
+STORAGE_PAIR * enumerate_records(int);
 
 STORAGE_TRANSACTION * begin_transaction();
 void commit_transaction(STORAGE_TRANSACTION *);

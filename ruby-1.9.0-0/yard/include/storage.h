@@ -40,3 +40,9 @@ void yard_apply_modification(struct YardModification *);
 typedef struct YardModificationResult * (*YardStoreMethod)(struct YardModification *);
 
 struct YardModificationResult * yard_local_persist_objects(struct YardModification *);
+
+VALUE yard_local_load_object(struct YID *);
+
+VALUE yard_fetch_stored_object(struct YID *, int);
+
+int yard_local_cookie();

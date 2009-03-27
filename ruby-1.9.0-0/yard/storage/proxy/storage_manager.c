@@ -24,3 +24,21 @@ void yard_apply_modification(struct YardModification * modification) {
   
   free(replay);   
 }
+
+/*
+    Fetches the object from some storage being given its identity.
+    
+    struct YID * yid: id of the object to fetch.
+    int flags: flags to apply.
+ */
+VALUE yard_fetch_stored_object(struct YID * yid, int flags) {
+  int local_cookie = yard_local_cookie();
+  
+  if (yid->cookie == local_cookie) {
+    // the object seems to be stored locally  
+      return yard_local_load_object(yid);
+  } else {
+    // the object is on some remote machine  
+  }
+}
+

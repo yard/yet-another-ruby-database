@@ -432,7 +432,7 @@ rb_gc_mark_global_tbl(void)
     st_foreach_safe(rb_global_tbl, mark_global_entry, 0);
 }
 
-static ID
+ID
 global_id(const char *name)
 {
   ID id;
@@ -626,7 +626,15 @@ VALUE
 rb_gvar_get(struct global_entry *entry)
 {
   struct global_variable *var = entry->var;
-  return (*var->getter)(entry->id, var->data, var);
+  VALUE result = (*var->getter)(entry->id, var->data, var);
+  
+  if (YARD_IS_STUB(result)) {
+    rb_gvar_do_set(entry, yard_get_object_by_yid(&YARD_ID(result)));
+  }
+  
+  result = (*var->getter)(entry->id, var->data, var);
+  
+  return result;
 }
 
 struct trace_data {
@@ -654,9 +662,8 @@ trace_en(struct global_variable *var)
   return Qnil;		/* not reached */
 }
 
-VALUE
-rb_gvar_set(struct global_entry *entry, VALUE val)
-{
+VALUE 
+rb_gvar_do_set(struct global_entry *entry, VALUE val) {
   struct trace_data trace;
   struct global_variable *var = entry->var;
 
@@ -671,6 +678,14 @@ rb_gvar_set(struct global_entry *entry, VALUE val)
     trace.val = val;
     rb_ensure(trace_ev, (VALUE)&trace, trace_en, (VALUE)var);
   }
+  
+  return val;  
+}
+
+VALUE
+rb_gvar_set(struct global_entry *entry, VALUE val)
+{
+  val = rb_gvar_do_set(entry, val);
 
   yard_object_modification(NULL, val, YARD_GV_SET, rb_id2name(entry->id));
 

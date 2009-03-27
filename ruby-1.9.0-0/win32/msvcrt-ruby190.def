@@ -77,9 +77,11 @@ OnigSyntaxPosixBasic DATA
 OnigSyntaxPosixExtended DATA
 OnigSyntaxRuby DATA
 RUBY_FL_USER20 DATA
+RUBY_TYPE_SIZES DATA
 Sleep@4=_rb_w32_Sleep@4
 _DllMain@12
 __id_counter DATA
+__master DATA
 __yard_cache DATA
 __yard_local_persist_object
 __yard_process_associated
@@ -113,7 +115,6 @@ _stati64=rb_w32_stati64
 abort_transaction
 accept@12=_rb_w32_accept@12
 acosh
-append_data
 asinh
 atanh
 begin_transaction
@@ -138,6 +139,7 @@ endhostent
 endnetent
 endprotoent
 endservent
+enumerate_records
 env_dump_raw
 erf
 erfc
@@ -174,6 +176,7 @@ getsockname@12=_rb_w32_getsockname@12
 getsockopt@20=_rb_w32_getsockopt@20
 gettimeofday
 getuid
+global_id
 idAREF DATA
 idASET DATA
 idAnswer DATA
@@ -217,6 +220,7 @@ invoke_Integer_times_special_block
 invoke_Range_each_special_block
 ioctl
 ioctlsocket@12=_rb_w32_ioctlsocket@12
+is_object_local
 isatty=rb_w32_isatty
 iseq_build_from_ary
 iseq_compile
@@ -767,6 +771,7 @@ rb_global_variable
 rb_gv_get
 rb_gv_set
 rb_gvar_defined
+rb_gvar_do_set
 rb_gvar_get
 rb_gvar_set
 rb_hash
@@ -1276,6 +1281,7 @@ rb_with_disable_interrupt
 rb_write_error
 rb_write_error2
 rb_yard_id
+rb_yard_marshal_dump
 rb_yard_saved_object
 rb_yield
 rb_yield_splat
@@ -1283,7 +1289,6 @@ rb_yield_values
 rb_yield_values2
 read=rb_w32_read
 read_data
-read_multi_data
 recv@16=_rb_w32_recv@16
 recvfrom@24=_rb_w32_recvfrom@24
 rename=rb_w32_rename
@@ -1454,10 +1459,16 @@ waitpid
 write=rb_w32_write
 write_data
 yard_apply_modification
+yard_fetch_stored_object
 yard_get_object_by_yid
+yard_local_cookie
+yard_local_load_object
 yard_local_persist_objects
+yard_local_store_object
 yard_object_modification
+yard_resolve_stub
 yard_set_object_by_yid
 yard_storage_method DATA
 yard_type_persistable
+yard_update_target_object
 yid_to_key

@@ -4,6 +4,21 @@
 
 int __yard_started = 0;
 
+int RUBY_TYPE_SIZES[] = {0, 
+                         sizeof(Qnil), 
+                         sizeof(struct RObject), 
+                         sizeof(struct RClass),
+                         0,
+                         0,
+                         sizeof(struct RFloat),
+                         sizeof(struct RString),
+                         sizeof(struct RRegexp),
+                         sizeof(struct RArray),
+                         sizeof(long),
+                         sizeof(struct RHash),
+                         sizeof(struct RStruct),
+                         0};
+
 st_table * __yard_cache = NULL;
 
 static int st_yidcmp(st_data_t, st_data_t);
@@ -49,16 +64,19 @@ int yard_type_persistable(VALUE object) {
   return 1;
 }
 
-
-
 /*
     Fetches a pointer to some data stored in yard symbol table.
     
     struct YID * yid: id to fetch the object by.
  */
-void * yard_get_object_by_yid(struct YID * yid) {
-  void * result = NULL;
+VALUE yard_get_object_by_yid(struct YID * yid) {
+  VALUE result = NULL;
   st_lookup(__yard_cache, yid, &result);    
+
+  if (!result) {
+    result = yard_local_load_object(yid);
+    yard_set_object_by_yid(yid, result);
+  }
   
   return result;
 }
@@ -69,8 +87,36 @@ void * yard_get_object_by_yid(struct YID * yid) {
     struct YID * yid: yid to use.
     void * data: data to save.
  */
-void yard_set_object_by_yid(struct YID * yid, void * data) {
+void yard_set_object_by_yid(struct YID * yid, VALUE data) {
   st_insert(__yard_cache, yid, data);
+}
+
+/*
+    Takes care of loading and replacing the object's content with true one.
+    
+    VALUE object: object to load & replace.
+ */
+static VALUE _yard_resolve_stub(VALUE object) {
+  // load real value for the object
+  VALUE not_a_stub = yard_get_object_by_yid(&YARD_ID(object));
+  
+  // copy everything in place of this object
+  memcpy(object, not_a_stub, RUBY_TYPE_SIZES[BUILTIN_TYPE(not_a_stub)]);
+  
+  return object; 
+}
+
+/*
+    Inlined method just to make it run hell fast.
+    
+    VALUE object: object to check for stubbness.
+ */
+VALUE yard_resolve_stub(VALUE object) {
+  if (!YARD_IS_STUB(object)) {
+    return object;
+  }
+  
+  return _yard_resolve_stub(object);
 }
 
 /*

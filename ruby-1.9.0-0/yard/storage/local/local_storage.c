@@ -13,6 +13,8 @@ static const char * VM_GLOBAL_VARIABLES = "__vm_global_variables";
 long LocalCookie = 0;
 // id counter used to compose IDs
 long __id_counter = 1;
+// whether the current VM is a master one
+int __master = 1;
 
 // forwarded declaration of storage routine
 void __yard_local_persist_object(VALUE object, struct YardModificationResult * result);
@@ -24,52 +26,139 @@ static struct YID yard_new_identity();
     that it's unqiue across multiple VMs.
  */
 static void initialize_local_cookie() {
-  LocalCookie = 0;
+  LocalCookie = 123;
+}
+
+int yard_local_cookie() {
+  return LocalCookie; 
 }
 
 /*
     Loads neccessary system variables like global variable ID table, cookie and id counter.
  */
 static void load_system_variables() {
-  STORAGE_DATA id_data;
+  STORAGE_DATA * id_data;
   
   id_data = read_data(YARD_SYSTEM_SCHEMA, string_to_key(VM_ID_KEY));
  
-  if (id_data.data) {
-    __id_counter = *((long *)id_data.data);
-    free(id_data.data);
+  if (id_data->data) {
+    __id_counter = *((long *)id_data->data);
+    free(id_data->data);
   } 
 }
 
 /*
-    Saves the global variable being given its name and ID.
-
-	  char * name: Name of the variable to define.
+    Creates a new string from the data given.
+    
+    char * data: data for the string.
+    long size: size of the string.
  */
-static void define_global_variable(char * name) {
-  STORAGE_DATA data;
-  GLOBAL_VARIABLE variable;
-  STORAGE_TRANSACTION * txn = NULL;
+static VALUE pchar_to_string(char * data, long size) {
+  VALUE result;
+  
+  result = rb_str_buf_new(size);
+  rb_str_buf_cat(result, data, size);
+  
+  return result;
+}
+
+/*
+    Tests whether this is a local object.
+    
+    VALUE object: object to check.
+ */
+int is_object_local(VALUE object) {
+  if (!yard_type_persistable(object) || !YARD_OBJECT_SAVED(object)) {
+    return 0;
+  }
+  
+  return (LocalCookie == YARD_ID(object).cookie);
+}
+
+/*
+    Unmarshals the object from the data passed.
+    
+    STORAGE_DATA * data: data to instantiate object from.
+ */
+static VALUE instantiate_object_from_data(STORAGE_DATA * data) {  
+  return rb_marshal_load(pchar_to_string(data->data, data->size));
 }
 
 /*
     Loads all the global variables it can find.
  */
 static void load_global_variables() {
-  STORAGE_DATA * vars = NULL;
   struct global_entry * entry = NULL;
-  STORAGE_DATA ref;
+  VALUE value;
+  STORAGE_DATA * global_variable;
+  STORAGE_KEY key;
+  STORAGE_PAIR * pairs = enumerate_records(YARD_GLOBAL_NAMES_SCHEMA);
   
   printf("Printing out saved vars\n");
   
-  while (vars && vars->data) {
-    GLOBAL_VARIABLE * gvar = (GLOBAL_VARIABLE *)vars->data;
-    
-    entry = rb_global_entry(gvar->name);
+  while (pairs && pairs->tag == 0) {
+    // fetch/initialize global entry for current var name
+    entry = rb_global_entry(global_id(pairs->key.data));
 
-    // next variable
-    vars++;
+    value = yard_local_load_object(pairs->data.data);
+
+    // update global variable entry
+    rb_gvar_do_set(entry, value);
+    
+    pairs++;
   }
+}
+
+/*
+    Loads the object from local storage and returns the pointer to it.
+    
+    struct YID * yid: id of the object in the storage.
+ */
+VALUE yard_local_load_object(struct YID * yid) {
+  STORAGE_DATA * data = read_data(YARD_OBJECT_SPACE_SCHEMA, yid_to_key(yid));
+  VALUE result = instantiate_object_from_data(data);
+  
+  RBASIC(result)->yard_id = *yid;
+  RBASIC(result)->yard_flags = YARD_SAVED_OBJECT;
+  
+  return result;
+}
+
+/*
+    Stores the object in the local storage.
+    
+    VALUE object: object to store.
+ */
+void yard_local_store_object(VALUE object) {
+  STORAGE_DATA data;
+  
+  VALUE result = rb_yard_marshal_dump(object, YARD_SHALLOW);
+  data.size = RSTRING_LEN(result);
+  data.data = RSTRING_PTR(result);
+  data.flags = 0;
+  
+  write_data(YARD_OBJECT_SPACE_SCHEMA, yid_to_key(&RBASIC(object)->yard_id), &data, NULL);
+}
+
+/*
+    Updates the passed object: if the object has been stored on this machine,
+    just rewrites it. It the object came from some remote VM, sends the notification to that VM.
+    If the object has not been stored before, stores it immediately.
+ */
+void yard_update_target_object(VALUE object) {
+  // todo: what about extended objects (like Fixnum with ivars or so?)
+  if (!yard_type_persistable(object)) {
+    return;
+  }
+  
+  if (!YARD_OBJECT_SAVED(object)) {
+    RBASIC(object)->yard_id = yard_new_identity();
+    RBASIC(object)->yard_flags |= YARD_SAVED_OBJECT;
+  }
+  
+  if (is_object_local(object)) {
+    yard_local_store_object(object);  
+  }  
 }
 
 /*
@@ -78,8 +167,28 @@ static void load_global_variables() {
     char * name: name of the global variable to affect.
     VALUE object: object to assign.
  */
-static void assign_to_global_variable(char * name, VALUE object) {
+static void __local_assign_to_global_variable(char * name, VALUE object) {
   STORAGE_DATA data;
+  
+  data.size = sizeof(struct YID);
+  data.data = &YARD_ID(object);
+  data.flags = 0;
+  
+  printf("$>>$\n");
+  write_data(YARD_GLOBAL_NAMES_SCHEMA, string_to_key(name), &data, NULL);
+}
+
+
+/*
+    Saves the reference from global variable to the object given.
+    
+    char * name: name of the global variable to affect.
+    VALUE object: object to assign.
+ */
+static void assign_to_global_variable(char * name, VALUE object) {
+  if (__master) {
+    __local_assign_to_global_variable(name, object);     
+  }
 }
 
 /*
@@ -109,7 +218,9 @@ static struct YID yard_new_identity() {
  
   data.data = &__id_counter;
   data.size = sizeof(long);
-  write_data(YARD_SYSTEM_SCHEMA, string_to_key(VM_ID_KEY), data, NULL);   
+  data.flags = 0;
+  
+  write_data(YARD_SYSTEM_SCHEMA, string_to_key(VM_ID_KEY), &data, NULL);   
    
   return result;
 }
@@ -190,6 +301,9 @@ void __yard_local_persist_object(VALUE object, struct YardModificationResult * r
   if (BUILTIN_TYPE(object) == RUBY_T_HASH) {
     st_foreach(RHASH_TBL(object), &__hash_persister, result);
   }
+  
+  // finally, store the object itself
+  yard_local_store_object(object);
 }
 
 /*
@@ -203,11 +317,6 @@ struct YardModificationResult * yard_local_persist_objects(struct YardModificati
  
   result->id_assignments = NULL;
    
-  // a global symbol has been defined -- let's try to define it
-  if (modification->operation == YARD_GV_SET) {
-    define_global_variable((char *)modification->arg);    
-  }
-
   // let's start saving objects from the very first one.
   __yard_local_persist_object(object, result);
  
@@ -215,6 +324,10 @@ struct YardModificationResult * yard_local_persist_objects(struct YardModificati
   if (modification->operation == YARD_GV_SET) {
     assign_to_global_variable((char *)modification->arg, object);
   } 
+  
+  if (modification->object != NULL) {
+    yard_update_target_object(modification->object);
+  }
    
   return result; 
 }
