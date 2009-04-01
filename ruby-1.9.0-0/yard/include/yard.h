@@ -6,6 +6,7 @@
 #include "manager.h"
 #include "common.h"
 #include "storage.h"
+#include "net.h"
 
 #include "bdb.h"
 

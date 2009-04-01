@@ -94,7 +94,7 @@ SRCS = rmd160init.obj rmd160.obj
 OBJS = rmd160init.obj rmd160.obj
 TARGET = rmd160
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = digest/rmd160
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common

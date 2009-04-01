@@ -94,7 +94,7 @@ SRCS = md5init.obj md5.obj
 OBJS = md5init.obj md5.obj
 TARGET = md5
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = digest/md5
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common

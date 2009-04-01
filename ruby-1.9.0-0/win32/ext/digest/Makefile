@@ -94,7 +94,7 @@ SRCS = digest.c
 OBJS = digest.obj
 TARGET = digest
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = digest
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common

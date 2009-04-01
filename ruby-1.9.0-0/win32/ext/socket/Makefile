@@ -94,7 +94,7 @@ SRCS = socket.obj getaddrinfo.obj getnameinfo.obj
 OBJS = socket.obj getaddrinfo.obj getnameinfo.obj
 TARGET = socket
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = socket
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common

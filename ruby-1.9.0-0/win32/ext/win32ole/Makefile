@@ -94,7 +94,7 @@ SRCS = win32ole.c
 OBJS = win32ole.obj
 TARGET = win32ole
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = win32ole
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common

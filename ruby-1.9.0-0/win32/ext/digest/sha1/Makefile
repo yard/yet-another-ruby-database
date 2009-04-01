@@ -94,7 +94,7 @@ SRCS = sha1init.obj sha1.obj
 OBJS = sha1init.obj sha1.obj
 TARGET = sha1
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = digest/sha1
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common

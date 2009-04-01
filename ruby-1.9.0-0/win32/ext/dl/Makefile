@@ -94,7 +94,7 @@ SRCS = cfunc.c cptr.c dl.c handle.c
 OBJS = cfunc.obj cptr.obj dl.obj handle.obj
 TARGET = dl
 DLLIB = $(TARGET).so
-EXTSTATIC = 
+EXTSTATIC = dl
 STATIC_LIB = $(TARGET).lib
 
 RUBYCOMMONDIR = $(extout)/common
