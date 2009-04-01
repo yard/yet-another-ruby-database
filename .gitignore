@@ -1,14 +1,1 @@
-ruby-1.9.0-0/win32/*.obj
-ruby-1.9.0-0/win32/*.lib
-ruby-1.9.0-0/win32/*.exe
-ruby-1.9.0-0/win32/*.pdb
-ruby-1.9.0-0/win32/*.dll
-ruby-1.9.0-0/win32/ext/*.log
-ruby-1.9.0-0/win32/*/*/*.log
-ruby-1.9.0-0/win32/*/*/*/*.log
-ruby-1.9.0-0/win32/*/*/*/*/*.log
-ruby-1.9.0-0/win32/yard/*.obj
-ruby-1.9.0-0/win32/.*.time
-ruby-1.9.0-0/win32/*.res
-ruby-1.9.0-0/win32/*.db
-ruby-1.9.0-0/win32/*.0*
+ruby-1.9.0-0/win32/*

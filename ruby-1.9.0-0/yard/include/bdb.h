@@ -14,7 +14,7 @@ struct __global_variable {
 typedef struct __global_variable GLOBAL_VARIABLE;
 
 struct __storage_pair {
-  int tag;
+  struct __storage_pair * next;
   STORAGE_KEY key;
   STORAGE_DATA data;
 };

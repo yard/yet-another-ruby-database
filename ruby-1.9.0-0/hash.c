@@ -448,9 +448,9 @@ rb_hash_aref(VALUE hash, VALUE key)
     VALUE val;
 
     if (!RHASH(hash)->ntbl || !st_lookup(RHASH(hash)->ntbl, key, &val)) {
-	return rb_funcall(hash, id_default, 1, key);
+	return yard_resolve_stub(rb_funcall(hash, id_default, 1, key));
     }
-    return val;
+    return yard_resolve_stub(val);
 }
 
 VALUE
@@ -461,7 +461,7 @@ rb_hash_lookup(VALUE hash, VALUE key)
     if (!RHASH(hash)->ntbl || !st_lookup(RHASH(hash)->ntbl, key, &val)) {
 	return Qnil; /* without Hash#default */
     }
-    return val;
+    return yard_resolve_stub(val);
 }
 
 /*
@@ -513,7 +513,7 @@ rb_hash_fetch(int argc, VALUE *argv, VALUE hash)
 	}
 	return if_none;
     }
-    return val;
+    return yard_resolve_stub(val);
 }
 
 /*
@@ -656,11 +656,11 @@ rb_hash_delete_key(VALUE hash, VALUE key)
     if (RHASH(hash)->iter_lev > 0) {
 	if (st_delete_safe(RHASH(hash)->ntbl, &ktmp, &val, Qundef)) {
 	    FL_SET(hash, HASH_DELETED);
-	    return (VALUE)val;
+	    return yard_resolve_stub((VALUE)val);
 	}
     }
     else if (st_delete(RHASH(hash)->ntbl, &ktmp, &val))
-	return (VALUE)val;
+	return yard_resolve_stub((VALUE)val);
     return Qundef;
 }
 
@@ -689,7 +689,7 @@ rb_hash_delete(VALUE hash, VALUE key)
 
     rb_hash_modify(hash);
     val = rb_hash_delete_key(hash, key);
-    if (val != Qundef) return val;
+    if (val != Qundef) return yard_resolve_stub(val);
     if (rb_block_given_p()) {
 	return rb_yield(key);
     }
@@ -707,7 +707,7 @@ shift_i(VALUE key, VALUE value, struct shift_var *var)
     if (key == Qundef) return ST_CONTINUE;
     if (var->key != Qundef) return ST_STOP;
     var->key = key;
-    var->val = value;
+    var->val = yard_resolve_stub(value);
     return ST_DELETE;
 }
 
@@ -716,7 +716,7 @@ shift_i_safe(VALUE key, VALUE value, struct shift_var *var)
 {
     if (key == Qundef) return ST_CONTINUE;
     var->key = key;
-    var->val = value;
+    var->val = yard_resolve_stub(value);
     return ST_STOP;
 }
 
@@ -948,7 +948,7 @@ static int
 replace_i(VALUE key, VALUE val, VALUE hash)
 {
     if (key != Qundef) {
-	rb_hash_aset(hash, key, val);
+	    rb_hash_aset(hash, key, val);
     }
 
     return ST_CONTINUE;
@@ -1450,7 +1450,7 @@ hash_i(VALUE key, VALUE val, int *hval)
     if (key == Qundef) return ST_CONTINUE;
     *hval ^= rb_hash(key);
     *hval *= 137;
-    *hval ^= rb_hash(val);
+    *hval ^= rb_hash(yard_resolve_stub(val));
     return ST_CONTINUE;
 }
 

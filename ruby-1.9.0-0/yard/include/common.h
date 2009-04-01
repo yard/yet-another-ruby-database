@@ -23,7 +23,11 @@
 // checks whether the given global symbol is already defined in this VM
 int rb_global_entry_defined(ID id);
 
+// grab at least one level of object graph; deeper nodes may be replaced with links
 #define YARD_SHALLOW 1
+// grab the whole object graph
 #define YARD_FULL 2
+// grab as few levels as possible; ideally, grab jsut a reference to the object
+#define YARD_REF_ONLY 4
 
 #endif

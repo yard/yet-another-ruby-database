@@ -628,13 +628,7 @@ rb_gvar_get(struct global_entry *entry)
   struct global_variable *var = entry->var;
   VALUE result = (*var->getter)(entry->id, var->data, var);
   
-  if (YARD_IS_STUB(result)) {
-    rb_gvar_do_set(entry, yard_get_object_by_yid(&YARD_ID(result)));
-  }
-  
-  result = (*var->getter)(entry->id, var->data, var);
-  
-  return result;
+  return yard_resolve_stub(result);
 }
 
 struct trace_data {
@@ -988,7 +982,7 @@ default:
 VALUE
 rb_ivar_get(VALUE obj, ID id)
 {
-  return ivar_get(obj, id, Qtrue);
+  return yard_resolve_stub(ivar_get(obj, id, Qtrue));
 }
 
 VALUE
@@ -1108,7 +1102,7 @@ obj_ivar_i(ID key, VALUE index, struct obj_ivar_tag *data)
   if (index < ROBJECT_LEN(data->obj)) {
     VALUE val = ROBJECT_PTR(data->obj)[index];
     if (val != Qundef) {
-      return (data->func)(key, val, data->arg);
+      return (data->func)(key, yard_resolve_stub(val), data->arg);
     }
   }
   return ST_CONTINUE;

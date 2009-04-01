@@ -96,16 +96,18 @@ static void load_global_variables() {
   
   printf("Printing out saved vars\n");
   
-  while (pairs && pairs->tag == 0) {
+  while (pairs != NULL) {
+    printf("Getting %s", pairs->key.data);
     // fetch/initialize global entry for current var name
     entry = rb_global_entry(global_id(pairs->key.data));
 
-    value = yard_local_load_object(pairs->data.data);
+    // fetch marshalled data for the object
+    value = instantiate_object_from_data(&pairs->data);
 
     // update global variable entry
     rb_gvar_do_set(entry, value);
     
-    pairs++;
+    pairs = pairs->next;
   }
 }
 
@@ -155,7 +157,7 @@ void yard_update_target_object(VALUE object) {
     RBASIC(object)->yard_id = yard_new_identity();
     RBASIC(object)->yard_flags |= YARD_SAVED_OBJECT;
   }
-  
+ 
   if (is_object_local(object)) {
     yard_local_store_object(object);  
   }  
@@ -170,11 +172,11 @@ void yard_update_target_object(VALUE object) {
 static void __local_assign_to_global_variable(char * name, VALUE object) {
   STORAGE_DATA data;
   
-  data.size = sizeof(struct YID);
-  data.data = &YARD_ID(object);
+  VALUE result = rb_yard_marshal_dump(object, YARD_REF_ONLY);
+  data.size = RSTRING_LEN(result);
+  data.data = RSTRING_PTR(result);
   data.flags = 0;
   
-  printf("$>>$\n");
   write_data(YARD_GLOBAL_NAMES_SCHEMA, string_to_key(name), &data, NULL);
 }
 

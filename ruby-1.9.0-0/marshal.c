@@ -549,10 +549,14 @@ w_object(VALUE obj, struct dump_arg *arg, int limit)
 
     w_long(obj, arg);
 
-    if ((arg->yard_flags & YARD_SHALLOW == YARD_SHALLOW) && YARD_OBJECT_SAVED(obj) && (arg->yard_level < arg->yard_depth)) {
+    if (((arg->yard_flags & YARD_FULL) != YARD_FULL) && 
+        YARD_OBJECT_SAVED(obj) && 
+        (((arg->yard_flags & YARD_REF_ONLY) == YARD_REF_ONLY) || (arg->yard_level < arg->yard_depth))) {
+          
       w_byte(TYPE_YARD_LINK, arg);
       w_long(RBASIC(obj)->yard_id.id, arg);
       w_long(RBASIC(obj)->yard_id.cookie, arg);
+      
       return;
     }
 

@@ -197,6 +197,7 @@ static void bdb_transactional_write(int schema, DBT * key, DBT * data, DB_TXN * 
   }
   
   data->flags = key->flags = 0;
+  printf(">>> Committing data %s\n", key->data);
   db->put(db, temp_txn, key, data, flags);  
   
   // if the transaction is our, commit it
@@ -236,35 +237,38 @@ STORAGE_PAIR * enumerate_records(int schema) {
   DBC * cursor = NULL;
   DB * db = dbs[schema];
   db_recno_t record_count = 0;
-  STORAGE_PAIR * result = NULL;
+  int return_code = 0;
+  
+  STORAGE_PAIR * result = (STORAGE_PAIR *)malloc(sizeof(STORAGE_PAIR));
+  STORAGE_PAIR * current = result;
+  
   DBT * key = allocate_dbt(), * value = allocate_dbt();
+  
+  memset(current, 0, sizeof(STORAGE_PAIR));
   
   // initialize a cursor
   db->cursor(db, NULL, &cursor, 0);
   
   // put the cursor to the first record
-  cursor->c_get(cursor, key, value, DB_FIRST);
-  
-  // count the records
-  cursor->c_count(cursor, &record_count, 0);
+  return_code = cursor->c_get(cursor, &current->key, &current->data, DB_FIRST);
  
-  result = (STORAGE_PAIR *)malloc(sizeof(STORAGE_PAIR) * (record_count + 1));
-  memset(result, 0, sizeof(STORAGE_PAIR) * (record_count + 1));
-  
-  result[record_count].tag = 1;
+  // if no data has been found, just get out of there 
+  if (return_code == DB_NOTFOUND) {
+    return NULL;
+  }
   
   // if we have records...
-  if (record_count > 0) {
-    record_count--;
-    // read the first...
-    cursor->c_get(cursor, &result[record_count].key, &result[record_count].data, DB_FIRST);
+  // let's iterate over them == load each and see if we succeeded in loading;
+  // it we did, move the current pointer to the next record to work with
+  while ((return_code == 0) && (current = (current->next == NULL ? current : current->next))) {
+    current->next = (STORAGE_PAIR *)malloc(sizeof(STORAGE_PAIR));
+    memset(current->next, 0, sizeof(STORAGE_PAIR));
+      
+    return_code = cursor->c_get(cursor, &current->next->key, &current->next->data, DB_NEXT);
   }
   
-  // and loop through others
-  for(; record_count > 0; record_count--) {
-    cursor->c_get(cursor, &result[record_count - 1].key, &result[record_count - 1].data, DB_NEXT);
-  }
-
+  current->next = NULL;
+  
   cursor->c_close(cursor);
 
   return result;
