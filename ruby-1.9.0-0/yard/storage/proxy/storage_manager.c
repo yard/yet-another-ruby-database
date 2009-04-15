@@ -7,8 +7,27 @@ YardStoreMethod yard_storage_method = NULL;
  
     struct YardModificationResult * replay: what to replay
  */
-void replay_modification_result(struct YardModificationResult * replay) {
+void replay_modification_result(YARD_MODIFICATION * replay) {
       
+}
+
+/*  
+    Just stores the modification in the queue "to-be-executed-when-you-have-time".
+    
+    YARD_MODIFICATION * modification: modification to execute.
+*/
+void yard_apply_modification(YARD_MODIFICATION * modification) {
+  // try to fetch current transaction
+  YARD_TRANSACTION * txn = yard_fetch_transaction();
+  
+  // if any...
+  if (txn) {
+    // put all the changes into txn queue
+    yard_txn_enqueue_modification(txn, modification);  
+  } else {
+    // otherwise, just add to the global queue
+    yard_enqueue_single_modification(modification);  
+  }
 }
 
 /*
@@ -17,8 +36,8 @@ void replay_modification_result(struct YardModificationResult * replay) {
     
     YardModification * modification: modification to perform.
  */
-void yard_apply_modification(struct YardModification * modification) {
-  struct YardModificationResult * replay = yard_storage_method(modification);
+void yard_apply_modification_sync(YARD_MODIFICATION * modification) {
+  YARD_MODIFICATION * replay = yard_storage_method(modification);
   
   replay_modification_result(replay);
   
@@ -31,7 +50,7 @@ void yard_apply_modification(struct YardModification * modification) {
     struct YID * yid: id of the object to fetch.
     int flags: flags to apply.
  */
-VALUE yard_fetch_stored_object(struct YID * yid, int flags) {
+VALUE yard_fetch_stored_object(YID * yid, int flags) {
   int local_cookie = yard_local_cookie();
   
   if (yid->cookie == local_cookie) {

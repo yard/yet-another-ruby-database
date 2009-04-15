@@ -227,38 +227,43 @@ w_long(long x, struct dump_arg *arg)
 
 #if SIZEOF_LONG > 4
     if (!(RSHIFT(x, 31) == 0 || RSHIFT(x, 31) == -1)) {
-  /* big long does not fit in 4 bytes */
-  rb_raise(rb_eTypeError, "long too big to dump");
+      /* big long does not fit in 4 bytes */
+      rb_raise(rb_eTypeError, "long too big to dump");
     }
 #endif
 
     if (x == 0) {
-  w_byte(0, arg);
-  return;
+      w_byte(0, arg);
+      return;
     }
+    
     if (0 < x && x < 123) {
-  w_byte((char)(x + 5), arg);
-  return;
+      w_byte((char)(x + 5), arg);
+      return;
     }
+    
     if (-124 < x && x < 0) {
-  w_byte((char)((x - 5)&0xff), arg);
-  return;
+      w_byte((char)((x - 5)&0xff), arg);
+      return;
     }
+    
     for (i=1;i<sizeof(long)+1;i++) {
-  buf[i] = x & 0xff;
-  x = RSHIFT(x,8);
-  if (x == 0) {
-      buf[0] = i;
-      break;
-  }
-  if (x == -1) {
-      buf[0] = -i;
-      break;
-  }
+      buf[i] = x & 0xff;
+      x = RSHIFT(x,8);
+      if (x == 0) {
+          buf[0] = i;
+          break;
+      }
+      if (x == -1) {
+          buf[0] = -i;
+          break;
+      }
     }
+    
     len = i;
-    for (i=0;i<=len;i++) {
-  w_byte(buf[i], arg);
+    
+    for (i=0; i <= len; i++) {
+      w_byte(buf[i], arg);
     }
 }
 
@@ -541,12 +546,13 @@ w_object(VALUE obj, struct dump_arg *arg, int limit)
     if (limit == 0) {
   rb_raise(rb_eArgError, "exceed depth limit");
     }
-
+    
     limit--;
     arg->yard_level--;
     c_arg.limit = limit;
     c_arg.arg = arg;
 
+    
     w_long(obj, arg);
 
     if (((arg->yard_flags & YARD_FULL) != YARD_FULL) && 
@@ -601,12 +607,16 @@ w_object(VALUE obj, struct dump_arg *arg, int limit)
       st_add_direct(arg->data, obj, arg->data->num_entries);
             {
                 st_data_t compat_data;
-                rb_alloc_func_t allocator = rb_get_alloc_func(RBASIC(obj)->klass);
+                rb_alloc_func_t allocator = NULL;
+                allocator = rb_get_alloc_func(RBASIC(obj)->klass);
+                
+                
                 if (st_lookup(compat_allocator_tbl,
                               (st_data_t)allocator,
                               &compat_data)) {
                     marshal_compat_t *compat = (marshal_compat_t*)compat_data;
                     VALUE real_obj = obj;
+                    
                     obj = compat->dumper(real_obj);
                     st_insert(arg->compat_tbl, (st_data_t)obj, (st_data_t)real_obj);
                 }
@@ -621,6 +631,7 @@ w_object(VALUE obj, struct dump_arg *arg, int limit)
           if (hasiv) w_ivar(obj, 0, &c_arg);
           return;
       }
+      
       if (rb_respond_to(obj, s_dump)) {
           VALUE v;
                 st_table *ivtbl2 = 0;
@@ -643,7 +654,7 @@ w_object(VALUE obj, struct dump_arg *arg, int limit)
           }
           return;
       }
-
+      
   switch (BUILTIN_TYPE(obj)) {
     case T_CLASS:
       if (FL_TEST(obj, FL_SINGLETON)) {
@@ -713,15 +724,15 @@ w_object(VALUE obj, struct dump_arg *arg, int limit)
       w_uclass(obj, rb_cArray, arg);
       w_byte(TYPE_ARRAY, arg);
       {
-    long len = RARRAY_LEN(obj);
-    VALUE *ptr = RARRAY_PTR(obj);
-
-    w_long(len, arg);
-    while (len--) {
-        w_object(*ptr, arg, limit);
-        ptr++;
-    }
-      }
+        long len = RARRAY_LEN(obj);
+        VALUE *ptr = RARRAY_PTR(obj);
+        w_long(len, arg);
+        while (len--) {
+            w_object(*ptr, arg, limit);
+            ptr++;
+        }
+        
+      }      
       break;
 
     case T_HASH:
@@ -810,7 +821,7 @@ dump_ensure(struct dump_arg *arg)
     DATA_PTR(arg->wrapper) = 0;
     arg->wrapper = 0;
     if (arg->taint) {
-  OBJ_TAINT(arg->str);
+      OBJ_TAINT(arg->str);
     }
     return 0;
 }

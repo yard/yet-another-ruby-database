@@ -939,7 +939,7 @@ rb_hash_aset(VALUE hash, VALUE key, VALUE val)
 	st_add_direct(RHASH(hash)->ntbl, rb_str_new4(key), val);
     }
     
-    yard_object_modification(hash, val, YARD_HASH_ELEMENT_PUSH, key);
+    yard_object_modification(hash, val, YARD_OBJECT_MODIFICATION, key);
     
     return val;
 }

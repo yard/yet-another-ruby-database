@@ -2387,6 +2387,11 @@ Init_Object(void)
 
     rb_define_method(rb_mKernel, "nil?", rb_false, 0);
     rb_define_method(rb_mKernel, "start_yard", rb_launch_yard, 0);
+    
+    rb_define_method(rb_mKernel, "ybegin", rb_yard_begin_transaction, 0);
+    rb_define_method(rb_mKernel, "ycommit", rb_yard_commit_transaction, 0);
+    rb_define_method(rb_mKernel, "yabort", rb_yard_abort_transaction, 0);
+    
     rb_define_method(rb_mKernel, "===", rb_equal, 1); 
     rb_define_method(rb_mKernel, "=~", rb_obj_match, 1);
     rb_define_method(rb_mKernel, "!~", rb_obj_not_match, 1);

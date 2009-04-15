@@ -7,6 +7,9 @@
 #include "common.h"
 #include "storage.h"
 #include "net.h"
+#include "threads.h"
+#include "storage_worker.h"
+#include "txn.h"
 
 #include "bdb.h"
 

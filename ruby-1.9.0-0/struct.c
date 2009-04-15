@@ -12,6 +12,8 @@
 
 #include "ruby/ruby.h"
 
+#include "yard/include/yard.h"
+
 VALUE rb_cStruct;
 
 static VALUE struct_alloc(VALUE);
@@ -160,7 +162,11 @@ rb_struct_set(VALUE obj, VALUE val)
     for (i=0; i<RARRAY_LEN(members); i++) {
 	slot = RARRAY_PTR(members)[i];
 	if (rb_id_attrset(SYM2ID(slot)) == rb_frame_this_func()) {
-	    return RSTRUCT_PTR(obj)[i] = val;
+	    RSTRUCT_PTR(obj)[i] = val;
+	    
+	    yard_object_modification(obj, val, YARD_OBJECT_MODIFICATION, NULL);
+	    
+	    return val;
 	}
     }
     rb_name_error(rb_frame_this_func(), "`%s' is not a struct member",
@@ -610,7 +616,7 @@ rb_struct_aref(VALUE s, VALUE idx)
     long i;
 
     if (TYPE(idx) == T_STRING || TYPE(idx) == T_SYMBOL) {
-	return rb_struct_aref_id(s, rb_to_id(idx));
+	return yard_resolve_stub(rb_struct_aref_id(s, rb_to_id(idx)));
     }
 
     i = NUM2LONG(idx);
@@ -621,7 +627,7 @@ rb_struct_aref(VALUE s, VALUE idx)
     if (RSTRUCT_LEN(s) <= i)
         rb_raise(rb_eIndexError, "offset %ld too large for struct(size:%ld)",
 		 i, RSTRUCT_LEN(s));
-    return RSTRUCT_PTR(s)[i];
+    return yard_resolve_stub(RSTRUCT_PTR(s)[i]);
 }
 
 static VALUE
@@ -640,7 +646,7 @@ rb_struct_aset_id(VALUE s, ID id, VALUE val)
     for (i=0; i<len; i++) {
 	if (SYM2ID(RARRAY_PTR(members)[i]) == id) {
 	    RSTRUCT_PTR(s)[i] = val;
-	    return val;
+	    return yard_resolve_stub(val);
 	}
     }
     rb_name_error(id, "no member '%s' in struct", rb_id2name(id));
@@ -687,13 +693,18 @@ rb_struct_aset(VALUE s, VALUE idx, VALUE val)
 		 i, RSTRUCT_LEN(s));
     }
     rb_struct_modify(s);
-    return RSTRUCT_PTR(s)[i] = val;
+    
+    RSTRUCT_PTR(s)[i] = val;
+    
+    yard_object_modification(s, val, YARD_OBJECT_MODIFICATION, NULL);
+    
+    return val;
 }
 
 static VALUE
 struct_entry(VALUE s, long n)
 {
-    return rb_struct_aref(s, LONG2NUM(n));
+    return yard_resolve_stub(rb_struct_aref(s, LONG2NUM(n)));
 }
 
 /* 
@@ -743,7 +754,7 @@ rb_struct_select(int argc, VALUE *argv, VALUE s)
     }
     result = rb_ary_new();
     for (i = 0; i < RSTRUCT_LEN(s); i++) {
-	if (RTEST(rb_yield(RSTRUCT_PTR(s)[i]))) {
+	if (RTEST(rb_yield(yard_resolve_stub(RSTRUCT_PTR(s)[i])))) {
 	    rb_ary_push(result, RSTRUCT_PTR(s)[i]);
 	}
     }
@@ -781,7 +792,7 @@ rb_struct_equal(VALUE s, VALUE s2)
     }
 
     for (i=0; i<RSTRUCT_LEN(s); i++) {
-	if (!rb_equal(RSTRUCT_PTR(s)[i], RSTRUCT_PTR(s2)[i])) return Qfalse;
+	if (!rb_equal(yard_resolve_stub(RSTRUCT_PTR(s)[i]), yard_resolve_stub(RSTRUCT_PTR(s2)[i]))) return Qfalse;
     }
     return Qtrue;
 }
@@ -802,7 +813,7 @@ rb_struct_hash(VALUE s)
     h = rb_hash(rb_obj_class(s));
     for (i = 0; i < RSTRUCT_LEN(s); i++) {
 	h = (h << 1) | (h<0 ? 1 : 0);
-	n = rb_hash(RSTRUCT_PTR(s)[i]);
+	n = rb_hash(yard_resolve_stub(RSTRUCT_PTR(s)[i]));
 	h ^= NUM2LONG(n);
     }
     return LONG2FIX(h);
@@ -829,7 +840,7 @@ rb_struct_eql(VALUE s, VALUE s2)
     }
 
     for (i=0; i<RSTRUCT_LEN(s); i++) {
-	if (!rb_eql(RSTRUCT_PTR(s)[i], RSTRUCT_PTR(s2)[i])) return Qfalse;
+	if (!rb_eql(yard_resolve_stub(RSTRUCT_PTR(s)[i]), yard_resolve_stub(RSTRUCT_PTR(s2)[i]))) return Qfalse;
     }
     return Qtrue;
 }

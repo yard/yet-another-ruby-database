@@ -19,7 +19,7 @@ int __master = 1;
 // forwarded declaration of storage routine
 void __yard_local_persist_object(VALUE object, struct YardModificationResult * result);
 // forwarded declaration of identity generator
-static struct YID yard_new_identity();
+static YID yard_new_identity();
 
 /*
     Initializes the local cookie value, attempting to set it in such a way
@@ -114,9 +114,9 @@ static void load_global_variables() {
 /*
     Loads the object from local storage and returns the pointer to it.
     
-    struct YID * yid: id of the object in the storage.
+    YID * yid: id of the object in the storage.
  */
-VALUE yard_local_load_object(struct YID * yid) {
+VALUE yard_local_load_object(YID * yid) {
   STORAGE_DATA * data = read_data(YARD_OBJECT_SPACE_SCHEMA, yid_to_key(yid));
   VALUE result = instantiate_object_from_data(data);
   
@@ -133,12 +133,12 @@ VALUE yard_local_load_object(struct YID * yid) {
  */
 void yard_local_store_object(VALUE object) {
   STORAGE_DATA data;
-  
   VALUE result = rb_yard_marshal_dump(object, YARD_SHALLOW);
+    
   data.size = RSTRING_LEN(result);
   data.data = RSTRING_PTR(result);
   data.flags = 0;
-  
+   
   write_data(YARD_OBJECT_SPACE_SCHEMA, yid_to_key(&RBASIC(object)->yard_id), &data, NULL);
 }
 
@@ -210,8 +210,8 @@ void initialize_local_storage(char * db_file_name) {
 /*
     Generates a new identity.
  */
-static struct YID yard_new_identity() {
-  struct YID result;
+static YID yard_new_identity() {
+  YID result;
   STORAGE_DATA data;
   
   // our id generation approach is simple: be atomic and you don't have to worry about sync :)
@@ -232,9 +232,9 @@ static struct YID yard_new_identity() {
     
     VALUE key: key element, probably persistable.
     VALUE value: value elemement, probably persistable.
-    struct YardModificationResult * result: our "logger" structure.
+    YARD_MODIFICATION_RESULT * result: our "logger" structure.
  */
-static int __hash_persister(VALUE key, VALUE value, struct YardModificationResult * result) {
+static int __hash_persister(VALUE key, VALUE value, YARD_MODIFICATION_RESULT * result) {
   // just save key
   __yard_local_persist_object(key, result);  
   // and value
@@ -261,10 +261,10 @@ int __yard_process_associated(ID iv_name, VALUE val, st_data_t arg) {
     Stores a given object tracking the history of id assignemnts to be replayed.
     
     VALUE object: object to save
-    struct YardModificationResult * result: result with id map to be replayed on source VM.
+    YARD_MODIFICATION_RESULT * result: result with id map to be replayed on source VM.
  */
-void __yard_local_persist_object(VALUE object, struct YardModificationResult * result) {
-  struct YardIdAssignment * assignment = NULL;
+void __yard_local_persist_object(VALUE object, YARD_MODIFICATION_RESULT * result) {
+  YARD_ID_ASSIGNMENT * assignment = NULL;
   int i = 0;
   
   // nop in case of scalar type
@@ -273,7 +273,7 @@ void __yard_local_persist_object(VALUE object, struct YardModificationResult * r
   }
   
   // allocate a new identity assignemnt token
-  assignment = (struct YardIdAssignment *)malloc(sizeof(struct YardIdAssignment));
+  assignment = (YARD_ID_ASSIGNMENT *)malloc(sizeof(YARD_ID_ASSIGNMENT));
   
   RBASIC(object)->yard_id = yard_new_identity();
   RBASIC(object)->yard_flags = YARD_SAVED_OBJECT;
@@ -311,14 +311,14 @@ void __yard_local_persist_object(VALUE object, struct YardModificationResult * r
 /*
     Persists the given object at local storage.
     
-    VALUE object: object to persist along with associated ones.
+    YARD_MODIFICATION * modification: what modification to perform.
  */
-struct YardModificationResult * yard_local_persist_objects(struct YardModification * modification) {
+YARD_MODIFICATION_RESULT * yard_local_persist_objects(YARD_MODIFICATION * modification) {
   VALUE object = modification->data;
-  struct YardModificationResult * result = (struct YardModificationResult *)malloc(sizeof(struct YardModificationResult));
+  YARD_MODIFICATION_RESULT * result = (YARD_MODIFICATION_RESULT *)malloc(sizeof(YARD_MODIFICATION_RESULT));
  
   result->id_assignments = NULL;
-   
+    
   // let's start saving objects from the very first one.
   __yard_local_persist_object(object, result);
  

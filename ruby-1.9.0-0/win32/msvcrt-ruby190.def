@@ -80,6 +80,7 @@ RUBY_FL_USER20 DATA
 RUBY_TYPE_SIZES DATA
 Sleep@4=_rb_w32_Sleep@4
 _DllMain@12
+___thread_func@4
 __id_counter DATA
 __master DATA
 __yard_cache DATA
@@ -213,6 +214,7 @@ idThrowState DATA
 idTimes DATA
 id__send__ DATA
 initialize_local_storage
+initialize_transaction_system
 insn_make_insn_table
 insns_name_array
 invoke_Array_each_special_block
@@ -233,6 +235,7 @@ link
 listen@8=_rb_w32_listen@8
 log2
 long_to_key
+manager_work_function
 mkdir=rb_w32_mkdir
 nodeline
 nodetype
@@ -1280,6 +1283,9 @@ rb_warning
 rb_with_disable_interrupt
 rb_write_error
 rb_write_error2
+rb_yard_abort_transaction
+rb_yard_begin_transaction
+rb_yard_commit_transaction
 rb_yard_id
 rb_yard_marshal_dump
 rb_yard_saved_object
@@ -1459,16 +1465,36 @@ waitpid
 write=rb_w32_write
 write_data
 yard_apply_modification
+yard_apply_modification_sync
+yard_create_thread
+yard_create_thread_lock
+yard_dequeue_modification
+yard_enqueue_modification
+yard_enqueue_single_modification
 yard_fetch_stored_object
+yard_fetch_transaction
+yard_get_current_thread
 yard_get_object_by_yid
+yard_init_storage_worker
+yard_initialize_safe_op_queue
 yard_local_cookie
 yard_local_load_object
 yard_local_persist_objects
 yard_local_store_object
 yard_object_modification
+yard_pause_storage_worker
+yard_pop_transaction
+yard_push_transaction
+yard_reload_object
 yard_resolve_stub
+yard_resume_storage_worker
 yard_set_object_by_yid
+yard_start_storage_worker
 yard_storage_method DATA
+yard_thread_lock_end
+yard_thread_lock_start
+yard_thread_sleep
+yard_txn_enqueue_modification
 yard_type_persistable
 yard_update_target_object
 yid_to_key

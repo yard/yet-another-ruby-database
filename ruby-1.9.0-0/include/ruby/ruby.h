@@ -400,19 +400,20 @@ VALUE rb_newobj(void);
     if (FL_TEST(obj, FL_EXIVAR)) rb_copy_generic_ivar((VALUE)dup,(VALUE)obj);\
 } while (0)
 
-#define YARD_ID LONG_LONG
 
-struct YID {
+struct __yid {
     long id;
     long cookie;
 };
+
+typedef struct __yid YID;
 
 struct RBasic {  
     VALUE flags;
     VALUE klass;
     
     int yard_flags;
-    struct YID yard_id;
+    YID yard_id;
     
     ID src_object_id;
 };

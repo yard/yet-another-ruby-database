@@ -803,7 +803,7 @@ generic_ivar_get(VALUE obj, ID id, int warn)
   if (generic_iv_tbl) {
     if (st_lookup(generic_iv_tbl, obj, &tbl)) {
       if (st_lookup((st_table *)tbl, id, &val)) {
-        return val;
+        return yard_resolve_stub(val);
       }
     }
   }
@@ -961,12 +961,12 @@ case T_OBJECT:
   if (ROBJECT_LEN(obj) <= index) break;
   val = ROBJECT_PTR(obj)[index];
   if (val != Qundef)
-    return val;
+    return yard_resolve_stub(val);
   break;
 case T_CLASS:
 case T_MODULE:
   if (RCLASS_IV_TBL(obj) && st_lookup(RCLASS_IV_TBL(obj), id, &val))
-    return val;
+    return yard_resolve_stub(val);
   break;
 default:
   if (FL_TEST(obj, FL_EXIVAR) || rb_special_const_p(obj))
@@ -982,7 +982,7 @@ default:
 VALUE
 rb_ivar_get(VALUE obj, ID id)
 {
-  return yard_resolve_stub(ivar_get(obj, id, Qtrue));
+  return ivar_get(obj, id, Qtrue);
 }
 
 VALUE
@@ -1057,7 +1057,7 @@ default:
   break;
   }
 
-  yard_object_modification(obj, val, YARD_OBJECT_IV_SET, NULL);
+  yard_object_modification(obj, val, YARD_OBJECT_MODIFICATION, NULL);
 
   return val;
 }

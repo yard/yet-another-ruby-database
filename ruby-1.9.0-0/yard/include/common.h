@@ -12,6 +12,9 @@
 // setting this flag means the object is just a stub for a YARD object stored somewhere else
 #define YARD_OBJECT_STUB 4
 
+// means the object is being saved right now. It's ok to attach 
+#define YARD_OBJECT_SAVING 8
+
 #define YARD_FLAGS(obj) (RBASIC(obj)->yard_flags)
 
 #define YARD_OBJECT_SAVED(obj) (!IMMEDIATE_P(obj) && RTEST(obj) && (YARD_FLAGS(obj) & YARD_SAVED_OBJECT) == YARD_SAVED_OBJECT)

@@ -8,7 +8,7 @@ typedef DB_TXN STORAGE_TRANSACTION;
 
 struct __global_variable {
   char name[255];
-  struct YID id;
+  YID id;
 };
 
 typedef struct __global_variable GLOBAL_VARIABLE;
@@ -43,4 +43,4 @@ void abort_transaction(STORAGE_TRANSACTION *);
 
 STORAGE_KEY * long_to_key(long key);
 STORAGE_KEY * string_to_key(char * key);
-STORAGE_KEY * yid_to_key(struct YID * key);
+STORAGE_KEY * yid_to_key(YID * key);

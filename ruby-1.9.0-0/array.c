@@ -420,7 +420,7 @@ rb_ary_store(VALUE ary, long idx, VALUE val)
   
   RARRAY_PTR(ary)[idx] = val;
     
-  yard_object_modification(ary, val, YARD_ARRAY_ELEMENT_PUSH, idx);
+  yard_object_modification(ary, val, YARD_OBJECT_MODIFICATION, idx);
 }
 
 static VALUE
@@ -1684,23 +1684,24 @@ rb_get_values_at(VALUE obj, long olen, int argc, VALUE *argv, VALUE (*func) (VAL
     long beg, len, i, j;
 
     for (i=0; i<argc; i++) {
-  if (FIXNUM_P(argv[i])) {
-      rb_ary_push(result, (*func)(obj, FIX2LONG(argv[i])));
-      continue;
-  }
-  /* check if idx is Range */
-  switch (rb_range_beg_len(argv[i], &beg, &len, olen, 0)) {
-    case Qfalse:
-      break;
-    case Qnil:
-      continue;
-    default:
-      for (j=0; j<len; j++) {
-    rb_ary_push(result, (*func)(obj, j+beg));
+      if (FIXNUM_P(argv[i])) {
+        rb_ary_push(result, (*func)(obj, FIX2LONG(argv[i])));
+        continue;
       }
-      continue;
-  }
-  rb_ary_push(result, (*func)(obj, NUM2LONG(argv[i])));
+      
+      /* check if idx is Range */
+      switch (rb_range_beg_len(argv[i], &beg, &len, olen, 0)) {
+        case Qfalse:
+          break;
+        case Qnil:
+          continue;
+        default:
+          for (j=0; j<len; j++) {
+            rb_ary_push(result, yard_resolve_stub((*func)(obj, j+beg)));
+          }
+          continue;
+      }
+      rb_ary_push(result, yard_resolve_stub((*func)(obj, NUM2LONG(argv[i]))));
     }
     return result;
 }
@@ -2052,14 +2053,19 @@ rb_ary_replace(VALUE copy, VALUE orig)
     ary_iter_check(copy);
     if (copy == orig) return copy;
     shared = ary_make_shared(orig);
+    
     if (!ARY_SHARED_P(copy)) {
-  ptr = RARRAY(copy)->ptr;
-  xfree(ptr);
+      ptr = RARRAY(copy)->ptr;
+      xfree(ptr);
     }
+    
     RARRAY(copy)->ptr = RARRAY(orig)->ptr;
     RARRAY(copy)->len = RARRAY(orig)->len;
     RARRAY(copy)->aux.shared = shared;
+    
     FL_SET(copy, ELTS_SHARED);
+
+    yard_object_modification(copy, NULL, YARD_OBJECT_MODIFICATION, NULL);
 
     return copy;
 }

@@ -24,7 +24,7 @@ typedef struct __vm_connection_settings YARD_VM_CONNECTION_SETTINGS;
 */
 struct __vm_connection {
   // connection settings to restore in case of something bad happens
-  VM_CONNECTION_SETTINGS * connection_settings;
+  YARD_VM_CONNECTION_SETTINGS * connection_settings;
   int socket;
 };
 
@@ -41,9 +41,12 @@ struct __net_message {
   long ref_id;
   
   void * data;
-}
+};
 
 typedef struct __net_message YARD_NET_MESSAGE;
+
+#define YARD_NET_ANY_SOURCE -1
+#define YARD_NET_ANY_TARGET -1
 
 /*
     Initializes server listener.
@@ -88,6 +91,6 @@ YARD_NET_MESSAGE * yard_net_do_receive(int, int);
     Callback type specification: is used by YARD engine as invokation point in case some
     message has been received; is invoked by yard_net_try_receive only.
 */
-typedef struct void (*YardNetReceiveCallback)(YARD_NET_MESSAGE *);
+typedef void (*YardNetReceiveCallback)(YARD_NET_MESSAGE *);
 
 #endif

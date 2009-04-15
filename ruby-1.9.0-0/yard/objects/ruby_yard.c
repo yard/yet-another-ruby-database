@@ -33,7 +33,7 @@ VALUE rb_yard_id(VALUE object) {
     VALUE arg: modfying operation argument.
  */
 void yard_object_modification(VALUE obj, VALUE val, enum yard_modification_ops op, VALUE arg) {
-  struct YardModification modification;
+  YARD_MODIFICATION * modification = NULL;
   
   // nop in case of suspended yard
   if (!__yard_started) {
@@ -45,11 +45,13 @@ void yard_object_modification(VALUE obj, VALUE val, enum yard_modification_ops o
     return;
   }
   
-  modification.object = obj;
-  modification.data = val;
-  modification.arg = arg;
-  modification.operation = op;
+  modification = malloc(sizeof(YARD_MODIFICATION));
   
-  yard_apply_modification(&modification);
+  modification->object = obj;
+  modification->data = val;
+  modification->arg = arg;
+  modification->operation = op;
+  
+  yard_apply_modification(modification);
 }
 

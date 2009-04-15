@@ -51,11 +51,11 @@ STORAGE_KEY * string_to_key(char * key) {
     
     char * key: key to use.
  */
-STORAGE_KEY * yid_to_key(struct YID * key) {
+STORAGE_KEY * yid_to_key(YID * key) {
   STORAGE_KEY * result = (STORAGE_KEY *)allocate_dbt();
   
   result->data = key;
-  result->size = sizeof(struct YID);
+  result->size = sizeof(YID);
   
   return result;
 }
@@ -197,7 +197,6 @@ static void bdb_transactional_write(int schema, DBT * key, DBT * data, DB_TXN * 
   }
   
   data->flags = key->flags = 0;
-  printf(">>> Committing data %s\n", key->data);
   db->put(db, temp_txn, key, data, flags);  
   
   // if the transaction is our, commit it
@@ -267,6 +266,7 @@ STORAGE_PAIR * enumerate_records(int schema) {
     return_code = cursor->c_get(cursor, &current->next->key, &current->next->data, DB_NEXT);
   }
   
+  // mark our end
   current->next = NULL;
   
   cursor->c_close(cursor);

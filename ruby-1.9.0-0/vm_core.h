@@ -474,12 +474,13 @@ const char *ruby_node_name(int node);
 /* each thread has this size stack : 128KB */
 #define RUBY_VM_THREAD_STACK_SIZE (128 * 1024)
 
+#ifndef __STRUCT_GLOBAL_ENTRY
+#define __STRUCT_GLOBAL_ENTRY
 struct global_entry {
     struct global_variable *var;
     ID id;
-    
-    struct YID ref;
 };
+#endif
 
 #define GetProcPtr(obj, ptr) \
   GetCoreDataFromValue(obj, rb_proc_t, ptr)

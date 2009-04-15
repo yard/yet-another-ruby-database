@@ -3,7 +3,7 @@
 /*
  * The structure represents an internal change being performed on some object.
  */
-struct YardModification {
+struct _yard_modification {
   VALUE object;
   VALUE data;
   VALUE arg;
@@ -11,38 +11,48 @@ struct YardModification {
   enum yard_modification_ops operation;
 };
 
+typedef struct _yard_modification YARD_MODIFICATION; 
+
 /*
  * Maps some YID to an object.
  */
-struct YardIdAssignment {
+struct __yard_id_assignment {
   long src_object_id;
-  struct YID yard_id;
+  YID yard_id;
   
-  struct YardIdAssignment * next;  
+  struct __yard_id_assignment * next;  
 };
+
+typedef struct __yard_id_assignment YARD_ID_ASSIGNMENT; 
 
 /*
  * Holds the info about modification results.
  */
-struct YardModificationResult {
+struct __yard_modification_result {
   int success;
   
   long id_assignment_length;
-  struct YardIdAssignment * id_assignments;
+  YARD_ID_ASSIGNMENT * id_assignments;
 };
+
+typedef struct __yard_modification_result YARD_MODIFICATION_RESULT;
+
+
 
 void initialize_local_storage(char * db_file_name);
 
-void replay_modification_result(struct YardModificationResult *);
+void replay_modification_result(YARD_MODIFICATION_RESULT *);
 
-void yard_apply_modification(struct YardModification *);
+void yard_apply_modification_async(YARD_MODIFICATION *);
 
-typedef struct YardModificationResult * (*YardStoreMethod)(struct YardModification *);
+void yard_apply_modification_sync(YARD_MODIFICATION *);
 
-struct YardModificationResult * yard_local_persist_objects(struct YardModification *);
+typedef YARD_MODIFICATION_RESULT * (*YardStoreMethod)(YARD_MODIFICATION *);
 
-VALUE yard_local_load_object(struct YID *);
+YARD_MODIFICATION_RESULT * yard_local_persist_objects(YARD_MODIFICATION *);
 
-VALUE yard_fetch_stored_object(struct YID *, int);
+VALUE yard_local_load_object(YID *);
+
+VALUE yard_fetch_stored_object(YID *, int);
 
 int yard_local_cookie();

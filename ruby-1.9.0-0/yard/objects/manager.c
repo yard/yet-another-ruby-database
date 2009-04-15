@@ -4,20 +4,27 @@
 
 int __yard_started = 0;
 
-int RUBY_TYPE_SIZES[] = {0, 
-                         sizeof(Qnil), 
-                         sizeof(struct RObject), 
-                         sizeof(struct RClass),
-                         0,
-                         0,
-                         sizeof(struct RFloat),
-                         sizeof(struct RString),
-                         sizeof(struct RRegexp),
-                         sizeof(struct RArray),
-                         sizeof(long),
-                         sizeof(struct RHash),
-                         sizeof(struct RStruct),
-                         0};
+int RUBY_TYPE_SIZES[] = {0,                           // undef
+                         sizeof(Qnil),                // nil
+                         sizeof(struct RObject),      // generic object
+                         sizeof(struct RClass),       // generic class
+                         0,                           // IClass -- drop
+                         0,                           // Module -- drop
+                         sizeof(struct RFloat),       // float
+                         sizeof(struct RString),      // string
+                         sizeof(struct RRegexp),      // regular expression
+                         sizeof(struct RArray),       // array
+                         sizeof(VALUE),               // fixnum
+                         sizeof(struct RHash),        // hash
+                         sizeof(struct RStruct),      // Struct
+                         sizeof(struct RBignum),      // Bignum
+                         0,                           // file
+                         0,                           // -- no such type
+                         sizeof(Qtrue),               // true
+                         sizeof(Qfalse),              // false
+                         sizeof(struct RData),        // data
+                         0,                           // regexp match
+                         sizeof(VALUE)};              // symbol
 
 st_table * __yard_cache = NULL;
 
@@ -31,12 +38,12 @@ static const struct st_hash_type type_yidhash = {
 
 int st_yidcmp(st_data_t x, st_data_t y)
 {
-    return (((struct YID *)x)->id == ((struct YID *)y)->id) && (((struct YID *)x)->cookie == ((struct YID *)y)->cookie);
+    return (((YID *)x)->id == ((YID *)y)->id) && (((YID *)x)->cookie == ((YID *)y)->cookie);
 }
 
 int st_yidhash(st_data_t id)
 {
-    return (int)(((struct YID *)id)->id << 16 + ((struct YID *)id)->cookie);
+    return (int)(((YID *)id)->id << 16 + ((YID *)id)->cookie);
 }
 
 /*
@@ -67,9 +74,9 @@ int yard_type_persistable(VALUE object) {
 /*
     Fetches a pointer to some data stored in yard symbol table.
     
-    struct YID * yid: id to fetch the object by.
+    YID * yid: id to fetch the object by.
  */
-VALUE yard_get_object_by_yid(struct YID * yid) {
+VALUE yard_get_object_by_yid(YID * yid) {
   VALUE result = NULL;
   st_lookup(__yard_cache, yid, &result);    
 
@@ -81,15 +88,6 @@ VALUE yard_get_object_by_yid(struct YID * yid) {
   return result;
 }
 
-/*
-    Saves the given pointer to the symbol table.
-    
-    struct YID * yid: yid to use.
-    void * data: data to save.
- */
-void yard_set_object_by_yid(struct YID * yid, VALUE data) {
-  st_insert(__yard_cache, yid, data);
-}
 
 /*
     Takes care of loading and replacing the object's content with true one.
@@ -104,6 +102,34 @@ static VALUE _yard_resolve_stub(VALUE object) {
   memcpy(object, not_a_stub, RUBY_TYPE_SIZES[BUILTIN_TYPE(not_a_stub)]);
   
   return object; 
+}
+
+/*
+    Reloads the given object, fetching it from the storage and replacing it wiht old version.
+    
+    VALUE object: object to reload.
+*/
+VALUE yard_reload_object(VALUE object) {
+  VALUE result;
+  
+  if (YARD_OBJECT_SAVED(object)) {
+    result = yard_local_load_object(&YARD_ID(object));
+    yard_set_object_by_yid(&YARD_ID(object), result);
+    
+    _yard_resolve_stub(object);
+  } 
+  
+  return result;
+}
+
+/*
+    Saves the given pointer to the symbol table.
+    
+    YID * yid: yid to use.
+    void * data: data to save.
+ */
+void yard_set_object_by_yid(YID * yid, VALUE data) {
+  st_insert(__yard_cache, yid, data);
 }
 
 /*
@@ -137,6 +163,10 @@ void launch_yard() {
   init_yard_cache();
   // launch local storage engine
   initialize_local_storage("default.db");
+  // initialize transaction support
+  initialize_transaction_system();
+  // start manager thread
+  yard_init_storage_worker();
   // mark the yard engine as started
   __yard_started = 1;
 }
