@@ -1,0 +1,8 @@
+#ifndef EXTCONF_H
+#define EXTCONF_H
+#define HAVE_WINDOWS_H 1
+#define HAVE_LOADLIBRARY 1
+#define HAVE_FREELIBRARY 1
+#define HAVE_GETPROCADDRESS 1
+#define RUBY_VERSION "1.9.0"
+#endif

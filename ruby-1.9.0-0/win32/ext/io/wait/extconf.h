@@ -1,5 +1,0 @@
-#ifndef EXTCONF_H
-#define EXTCONF_H
-#define HAVE_RB_W32_IOCTLSOCKET 1
-#define HAVE_RB_W32_IS_SOCKET 1
-#endif

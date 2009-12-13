@@ -1,0 +1,1537 @@
+EXPORTS
+FD_CLR=rb_w32_fdclr
+FD_COPY
+FD_ISSET=rb_w32_fdisset
+FD_SET=rb_w32_fdset
+FD_SET2
+GetCurrentThreadHandle
+Init_Array
+Init_BareVM
+Init_Bignum
+Init_Binding
+Init_Comparable
+Init_Cont
+Init_Continuation_body
+Init_Dir
+Init_Encoding
+Init_Enumerable
+Init_Enumerator
+Init_Exception
+Init_Fiber_as_Coroutine
+Init_File
+Init_GC
+Init_Hash
+Init_IO
+Init_ISeq
+Init_Math
+Init_Numeric
+Init_Object
+Init_Precision
+Init_Proc
+Init_Random
+Init_Range
+Init_Regexp
+Init_String
+Init_Struct
+Init_Thread
+Init_Time
+Init_VM
+Init_eval
+Init_ext
+Init_heap
+Init_id
+Init_jump
+Init_load
+Init_marshal
+Init_pack
+Init_prelude
+Init_process
+Init_signal
+Init_stack
+Init_sym
+Init_syserr
+Init_top_self
+Init_transcode
+Init_var_tables
+Init_version
+LocalCookie DATA
+MAX_CLIENT_CONNECTIONS DATA
+MAX_CONNECTIONS DATA
+OnigAsciiLowerMap DATA
+OnigDefaultCaseFoldFlag DATA
+OnigDefaultSyntax DATA
+OnigEncAsciiCtypeTable DATA
+OnigEncAsciiToLowerCaseTable DATA
+OnigEncAsciiToUpperCaseTable DATA
+OnigEncDefaultCharEncoding DATA
+OnigEncISO_8859_1_ToLowerCaseTable DATA
+OnigEncISO_8859_1_ToUpperCaseTable DATA
+OnigEncodingASCII DATA
+OnigEncodingEUC_JP DATA
+OnigEncodingSJIS DATA
+OnigEncodingUTF8 DATA
+OnigSyntaxASIS DATA
+OnigSyntaxEmacs DATA
+OnigSyntaxGnuRegex DATA
+OnigSyntaxGrep DATA
+OnigSyntaxJava DATA
+OnigSyntaxPerl DATA
+OnigSyntaxPerl_NG DATA
+OnigSyntaxPosixBasic DATA
+OnigSyntaxPosixExtended DATA
+OnigSyntaxRuby DATA
+RECV_BUFFER_SIZE DATA
+RUBY_FL_USER20 DATA
+RUBY_TYPE_SIZES DATA
+SELECT_TIMEOUT DATA
+Sleep@4=_rb_w32_Sleep@4
+_DllMain@12
+___thread_func@4
+__id_counter DATA
+__master DATA
+__yard_cache DATA
+__yard_local_persist_object
+__yard_process_associated
+__yard_started DATA
+_rb_w32_Sleep@4
+_rb_w32_accept@12
+_rb_w32_bind@12
+_rb_w32_connect@12
+_rb_w32_gethostbyaddr@12
+_rb_w32_gethostbyname@4
+_rb_w32_gethostname@8
+_rb_w32_getpeername@12
+_rb_w32_getprotobyname@4
+_rb_w32_getprotobynumber@4
+_rb_w32_getservbyname@8
+_rb_w32_getservbyport@8
+_rb_w32_getsockname@12
+_rb_w32_getsockopt@20
+_rb_w32_ioctlsocket@12
+_rb_w32_listen@8
+_rb_w32_recv@16
+_rb_w32_recvfrom@24
+_rb_w32_select@20
+_rb_w32_send@16
+_rb_w32_sendto@24
+_rb_w32_setsockopt@20
+_rb_w32_shutdown@8
+_rb_w32_socket@12
+_stat64=rb_w32_stati64
+_stati64=rb_w32_stati64
+abort_transaction
+accept@12=_rb_w32_accept@12
+acosh
+asinh
+atanh
+begin_transaction
+bind@12=_rb_w32_bind@12
+chown
+close=rb_w32_close
+commit_transaction
+connect@12=_rb_w32_connect@12
+crypt
+debug_print_post
+debug_print_pre
+debug_print_register
+des_cipher
+des_setkey
+dln_find_exe
+dln_find_file
+dln_load
+dtoa
+eaccess
+encrypt
+endhostent
+endnetent
+endprotoent
+endservent
+enumerate_records
+env_dump_raw
+erf
+erfc
+fclose=rb_w32_fclose
+fcntl
+flock
+freedtoa
+fseeko
+ftello
+ftruncate
+get_osfhandle=rb_w32_get_osfhandle
+getc=rb_w32_getc
+getcwd=rb_w32_getcwd
+getegid
+getenv=rb_w32_getenv
+geteuid
+getgid
+gethostbyaddr@12=_rb_w32_gethostbyaddr@12
+gethostbyname@4=_rb_w32_gethostbyname@4
+gethostname@8=_rb_w32_gethostname@8
+getlogin
+getnetbyaddr
+getnetbyname
+getnetent
+getpeername@12=_rb_w32_getpeername@12
+getpid=rb_w32_getpid
+getprotobyname@4=_rb_w32_getprotobyname@4
+getprotobynumber@4=_rb_w32_getprotobynumber@4
+getprotoent
+getservbyname@8=_rb_w32_getservbyname@8
+getservbyport@8=_rb_w32_getservbyport@8
+getservent
+getsockname@12=_rb_w32_getsockname@12
+getsockopt@20=_rb_w32_getsockopt@20
+gettimeofday
+getuid
+global_id
+idAREF DATA
+idASET DATA
+idAnswer DATA
+idArrayEach DATA
+idBackquote DATA
+idBitblt DATA
+idDIV DATA
+idEach DATA
+idEnd DATA
+idEq DATA
+idEqTilde DATA
+idEqq DATA
+idGE DATA
+idGT DATA
+idGets DATA
+idIntern DATA
+idLE DATA
+idLT DATA
+idLTLT DATA
+idLambda DATA
+idLength DATA
+idMINUS DATA
+idMOD DATA
+idMULT DATA
+idMethodMissing DATA
+idNeq DATA
+idNot DATA
+idPLUS DATA
+idRangeEachLE DATA
+idRangeEachLT DATA
+idSend DATA
+idSucc DATA
+idThrowState DATA
+idTimes DATA
+id__send__ DATA
+initialize_local_storage
+initialize_transaction_system
+initialize_winsock
+insn_make_insn_table
+insns_name_array
+invoke_Array_each_special_block
+invoke_Integer_times_special_block
+invoke_Range_each_special_block
+ioctl
+ioctlsocket@12=_rb_w32_ioctlsocket@12
+is_object_local
+isatty=rb_w32_isatty
+iseq_build_from_ary
+iseq_compile
+iseq_data_to_ary
+iseq_load
+iseq_translate_threaded_code
+kill
+launch_yard
+link
+listen@8=_rb_w32_listen@8
+log2
+long_to_key
+make_sockaddr_in
+manager_work_function
+mkdir=rb_w32_mkdir
+nodeline
+nodetype
+onig_alloc_init
+onig_bbuf_init
+onig_chain_link_add
+onig_chain_reduce
+onig_compile
+onig_copy_encoding
+onig_copy_syntax
+onig_end
+onig_error_code_to_format
+onig_error_code_to_str
+onig_foreach_name
+onig_free
+onig_free_node_list
+onig_free_shared_cclass_table
+onig_get_capture_tree
+onig_get_case_fold_flag
+onig_get_default_case_fold_flag
+onig_get_encoding
+onig_get_match_stack_limit_size
+onig_get_options
+onig_get_syntax
+onig_get_syntax_behavior
+onig_get_syntax_op
+onig_get_syntax_op2
+onig_get_syntax_options
+onig_init
+onig_is_code_in_cc
+onig_is_code_in_cc_len
+onig_is_in_code_range
+onig_match
+onig_name_to_backref_number
+onig_name_to_group_numbers
+onig_names_free
+onig_new
+onig_node_conv_to_str_node
+onig_node_free
+onig_node_list_add
+onig_node_new_alt
+onig_node_new_anchor
+onig_node_new_enclose
+onig_node_new_list
+onig_node_new_str
+onig_node_str_cat
+onig_node_str_clear
+onig_node_str_set
+onig_noname_group_capture_is_active
+onig_null_warn
+onig_number_of_capture_histories
+onig_number_of_captures
+onig_number_of_names
+onig_parse_make_tree
+onig_reduce_nested_quantifier
+onig_region_clear
+onig_region_copy
+onig_region_free
+onig_region_init
+onig_region_new
+onig_region_resize
+onig_region_resize_clear
+onig_region_set
+onig_renumber_name_table
+onig_scan_env_set_error_string
+onig_scan_unsigned_number
+onig_search
+onig_set_default_case_fold_flag
+onig_set_default_syntax
+onig_set_match_stack_limit_size
+onig_set_meta_char
+onig_set_syntax_behavior
+onig_set_syntax_op
+onig_set_syntax_op2
+onig_set_syntax_options
+onig_set_verb_warn_func
+onig_set_warn_func
+onig_snprintf_with_pattern
+onig_st_init_strend_table_with_size
+onig_st_insert_strend
+onig_st_lookup_strend
+onig_strcpy
+onig_strncmp
+onig_transfer
+onigenc_always_false_is_allowed_reverse_match
+onigenc_always_true_is_allowed_reverse_match
+onigenc_apply_all_case_fold_with_map
+onigenc_ascii_apply_all_case_fold
+onigenc_ascii_get_case_fold_codes_by_str
+onigenc_ascii_is_code_ctype
+onigenc_ascii_mbc_case_fold
+onigenc_get_case_fold_codes_by_str_with_map
+onigenc_get_default_encoding
+onigenc_get_left_adjust_char_head
+onigenc_get_prev_char_head
+onigenc_get_right_adjust_char_head
+onigenc_get_right_adjust_char_head_with_prev
+onigenc_init
+onigenc_is_mbc_newline_0x0a
+onigenc_mb2_code_to_mbc
+onigenc_mb2_code_to_mbclen
+onigenc_mb2_is_code_ctype
+onigenc_mb4_code_to_mbc
+onigenc_mb4_code_to_mbclen
+onigenc_mb4_is_code_ctype
+onigenc_mbn_mbc_case_fold
+onigenc_mbn_mbc_to_code
+onigenc_minimum_property_name_to_ctype
+onigenc_not_support_get_ctype_code_range
+onigenc_property_list_add_property
+onigenc_property_list_init
+onigenc_set_default_caseconv_table
+onigenc_set_default_encoding
+onigenc_single_byte_code_to_mbc
+onigenc_single_byte_code_to_mbclen
+onigenc_single_byte_left_adjust_char_head
+onigenc_single_byte_mbc_enc_len
+onigenc_single_byte_mbc_to_code
+onigenc_step
+onigenc_step_back
+onigenc_str_bytelen_null
+onigenc_strlen
+onigenc_strlen_null
+onigenc_unicode_apply_all_case_fold
+onigenc_unicode_ctype_code_range
+onigenc_unicode_get_case_fold_codes_by_str
+onigenc_unicode_is_code_ctype
+onigenc_unicode_mbc_case_fold
+onigenc_unicode_property_name_to_ctype
+onigenc_utf16_32_get_ctype_code_range
+onigenc_with_ascii_strncmp
+pchar_to_string
+proc_dump_raw
+process_message_from_socket
+putc=rb_w32_putc
+rb_Array
+rb_Float
+rb_Integer
+rb_String
+rb_add_event_hook
+rb_add_method
+rb_alias
+rb_alias_variable
+rb_any_to_s
+rb_apply
+rb_argv DATA
+rb_argv0 DATA
+rb_ary_aref
+rb_ary_assoc
+rb_ary_clear
+rb_ary_cmp
+rb_ary_concat
+rb_ary_delete
+rb_ary_delete_at
+rb_ary_dup
+rb_ary_each
+rb_ary_entry
+rb_ary_free
+rb_ary_freeze
+rb_ary_includes
+rb_ary_join
+rb_ary_last
+rb_ary_new
+rb_ary_new2
+rb_ary_new3
+rb_ary_new4
+rb_ary_plus
+rb_ary_pop
+rb_ary_push
+rb_ary_rassoc
+rb_ary_replace
+rb_ary_reverse
+rb_ary_shift
+rb_ary_sort
+rb_ary_sort_bang
+rb_ary_store
+rb_ary_subseq
+rb_ary_to_ary
+rb_ary_to_s
+rb_ary_unshift
+rb_ascii8bit_encoding
+rb_assoc_new
+rb_attr
+rb_attr_get
+rb_autoload
+rb_autoload_load
+rb_autoload_p
+rb_backref_get
+rb_backref_set
+rb_backtrace
+rb_barrier_new
+rb_barrier_release
+rb_barrier_wait
+rb_big2dbl
+rb_big2ll
+rb_big2long
+rb_big2str
+rb_big2str0
+rb_big2ull
+rb_big2ulong
+rb_big2ulong_pack
+rb_big_2comp
+rb_big_and
+rb_big_clone
+rb_big_cmp
+rb_big_div
+rb_big_divmod
+rb_big_eq
+rb_big_lshift
+rb_big_minus
+rb_big_modulo
+rb_big_mul
+rb_big_norm
+rb_big_or
+rb_big_plus
+rb_big_pow
+rb_big_resize
+rb_big_rshift
+rb_big_xor
+rb_binding_new
+rb_block_call
+rb_block_given_p
+rb_block_lambda
+rb_block_proc
+rb_bug
+rb_cArray DATA
+rb_cBarrier DATA
+rb_cBasicObject DATA
+rb_cBignum DATA
+rb_cBinding DATA
+rb_cClass DATA
+rb_cData DATA
+rb_cDir DATA
+rb_cEnv DATA
+rb_cFalseClass DATA
+rb_cFile DATA
+rb_cFixnum DATA
+rb_cFloat DATA
+rb_cHash DATA
+rb_cIO DATA
+rb_cISeq DATA
+rb_cInteger DATA
+rb_cMatch DATA
+rb_cMethod DATA
+rb_cModule DATA
+rb_cMutex DATA
+rb_cNameErrorMesg DATA
+rb_cNilClass DATA
+rb_cNumeric DATA
+rb_cObject DATA
+rb_cProc DATA
+rb_cRange DATA
+rb_cRegexp DATA
+rb_cStat DATA
+rb_cString DATA
+rb_cStruct DATA
+rb_cSymbol DATA
+rb_cThread DATA
+rb_cTime DATA
+rb_cTrueClass DATA
+rb_cUnboundMethod DATA
+rb_cVM DATA
+rb_call_end_proc
+rb_call_inits
+rb_call_super
+rb_catch
+rb_catch_obj
+rb_char_to_option_kcode
+rb_check_argv
+rb_check_array_type
+rb_check_backtrace
+rb_check_convert_type
+rb_check_frozen
+rb_check_inheritable
+rb_check_regexp_type
+rb_check_safe_obj
+rb_check_safe_str
+rb_check_string_type
+rb_check_to_integer
+rb_check_type
+rb_class2name
+rb_class_boot
+rb_class_inherited
+rb_class_inherited_p
+rb_class_init_copy
+rb_class_instance_methods
+rb_class_name
+rb_class_new
+rb_class_new_instance
+rb_class_path
+rb_class_private_instance_methods
+rb_class_protected_instance_methods
+rb_class_public_instance_methods
+rb_class_real
+rb_class_tbl DATA
+rb_clear_cache
+rb_clear_cache_by_class
+rb_clear_trace_func
+rb_cmperr
+rb_cmpint
+rb_compile_bug
+rb_compile_cstr
+rb_compile_error
+rb_compile_error_append
+rb_compile_file
+rb_compile_string
+rb_compile_warn
+rb_compile_warning
+rb_const_defined
+rb_const_defined_at
+rb_const_defined_from
+rb_const_get
+rb_const_get_at
+rb_const_get_from
+rb_const_list
+rb_const_set
+rb_convert_type
+rb_copy_generic_ivar
+rb_cstr2inum
+rb_cstr_to_dbl
+rb_cstr_to_inum
+rb_cv_get
+rb_cv_set
+rb_cvar_defined
+rb_cvar_get
+rb_cvar_set
+rb_data_object_alloc
+rb_dbl2big
+rb_dbl_cmp
+rb_declare_transcoder
+rb_default_external_encoding
+rb_default_rs DATA
+rb_deferr DATA
+rb_define_alias
+rb_define_alloc_func
+rb_define_attr
+rb_define_class
+rb_define_class_id
+rb_define_class_under
+rb_define_class_variable
+rb_define_const
+rb_define_dummy_encoding
+rb_define_global_const
+rb_define_global_function
+rb_define_hooked_variable
+rb_define_method
+rb_define_method_id
+rb_define_module
+rb_define_module_function
+rb_define_module_id
+rb_define_module_under
+rb_define_private_method
+rb_define_protected_method
+rb_define_readonly_variable
+rb_define_singleton_method
+rb_define_variable
+rb_define_virtual_variable
+rb_detach_process
+rb_disable_interrupt
+rb_disable_super
+rb_dvar_defined
+rb_eArgError DATA
+rb_eEOFError DATA
+rb_eException DATA
+rb_eFatal DATA
+rb_eFloatDomainError DATA
+rb_eIOError DATA
+rb_eIndexError DATA
+rb_eInterrupt DATA
+rb_eKeyError DATA
+rb_eLoadError DATA
+rb_eLocalJumpError DATA
+rb_eNameError DATA
+rb_eNoMemError DATA
+rb_eNoMethodError DATA
+rb_eNotImpError DATA
+rb_eRangeError DATA
+rb_eRegexpError DATA
+rb_eRuntimeError DATA
+rb_eScriptError DATA
+rb_eSecurityError DATA
+rb_eSignal DATA
+rb_eStandardError DATA
+rb_eStopIteration DATA
+rb_eSyntaxError DATA
+rb_eSysStackError DATA
+rb_eSystemCallError DATA
+rb_eSystemExit DATA
+rb_eThreadError DATA
+rb_eTypeError DATA
+rb_eZeroDivError DATA
+rb_each
+rb_enable_interrupt
+rb_enable_super
+rb_enc_alias
+rb_enc_ascget
+rb_enc_associate
+rb_enc_associate_index
+rb_enc_check
+rb_enc_codelen
+rb_enc_codepoint
+rb_enc_compatible
+rb_enc_copy
+rb_enc_default_external
+rb_enc_dummy_p
+rb_enc_find
+rb_enc_find_index
+rb_enc_from_encoding
+rb_enc_from_index
+rb_enc_get
+rb_enc_get_index
+rb_enc_init
+rb_enc_mbclen
+rb_enc_nth
+rb_enc_precise_mbclen
+rb_enc_register
+rb_enc_registered
+rb_enc_replicate
+rb_enc_set_default_external
+rb_enc_str_asciionly_p
+rb_enc_str_coderange
+rb_enc_str_new
+rb_enc_strlen
+rb_enc_symname2_p
+rb_enc_symname_p
+rb_enc_to_index
+rb_enc_tolower
+rb_enc_toupper
+rb_ensure
+rb_enumeratorize
+rb_env_path_tainted
+rb_eof_error
+rb_eql
+rb_equal
+rb_errinfo
+rb_error_frozen
+rb_eval_cmd
+rb_eval_string
+rb_eval_string_protect
+rb_eval_string_wrap
+rb_exc_fatal
+rb_exc_new
+rb_exc_new2
+rb_exc_new3
+rb_exc_raise
+rb_exec
+rb_exec_end_proc
+rb_exec_recursive
+rb_exit
+rb_extend_object
+rb_f_abort
+rb_f_block_given_p
+rb_f_eval
+rb_f_exec
+rb_f_exit
+rb_f_global_variables
+rb_f_kill
+rb_f_lambda
+rb_f_public_send
+rb_f_require
+rb_f_send
+rb_f_sprintf
+rb_f_trace_var
+rb_f_untrace_var
+rb_fatal
+rb_fdopen
+rb_fiber_alive_p
+rb_fiber_current
+rb_fiber_new
+rb_fiber_resume
+rb_fiber_start
+rb_fiber_transfer
+rb_fiber_yield
+rb_file_const
+rb_file_directory_p
+rb_file_expand_path
+rb_file_open
+rb_file_s_expand_path
+rb_file_sysopen
+rb_find_file
+rb_find_file_ext
+rb_fix2int
+rb_fix2str
+rb_float_new
+rb_fopen
+rb_frame_callee
+rb_frame_method_id_and_class
+rb_frame_pop
+rb_frame_this_func
+rb_free_generic_ivar
+rb_frozen_class_p
+rb_fs DATA
+rb_funcall
+rb_funcall2
+rb_funcall3
+rb_garbage_collect
+rb_gc
+rb_gc_call_finalizer_at_exit
+rb_gc_copy_finalizer
+rb_gc_disable
+rb_gc_enable
+rb_gc_finalize_deferred
+rb_gc_force_recycle
+rb_gc_mark
+rb_gc_mark_encodings
+rb_gc_mark_global_tbl
+rb_gc_mark_locations
+rb_gc_mark_machine_stack
+rb_gc_mark_maybe
+rb_gc_mark_parser
+rb_gc_mark_symbols
+rb_gc_mark_threads
+rb_gc_mark_trap_list
+rb_gc_register_address
+rb_gc_save_machine_context
+rb_gc_set_stack_end
+rb_gc_stack_maxsize DATA
+rb_gc_stack_start DATA
+rb_gc_start
+rb_gc_unregister_address
+rb_generic_ivar_table
+rb_genrand_int32
+rb_genrand_real
+rb_get_alloc_func
+rb_get_method_body
+rb_get_next_signal
+rb_get_path
+rb_get_path_no_checksafe
+rb_get_trap_cmd
+rb_get_values_at
+rb_getc
+rb_gets
+rb_glob
+rb_global_entry
+rb_global_entry_defined
+rb_global_tbl DATA
+rb_global_variable
+rb_gv_get
+rb_gv_set
+rb_gvar_defined
+rb_gvar_do_set
+rb_gvar_get
+rb_gvar_set
+rb_hash
+rb_hash_aref
+rb_hash_aset
+rb_hash_assoc
+rb_hash_delete
+rb_hash_delete_if
+rb_hash_foreach
+rb_hash_freeze
+rb_hash_lookup
+rb_hash_new
+rb_hash_rassoc
+rb_hash_reject_bang
+rb_hash_select
+rb_hash_tbl
+rb_hash_values_at
+rb_id2name
+rb_id2str
+rb_id_attrset
+rb_id_encoding
+rb_include_module
+rb_inspect
+rb_int2big
+rb_int2inum
+rb_intern
+rb_intern2
+rb_intern3
+rb_intern_str
+rb_interrupt
+rb_invalid_str
+rb_io_addstr
+rb_io_binmode
+rb_io_check_closed
+rb_io_check_initialized
+rb_io_check_readable
+rb_io_check_writable
+rb_io_close
+rb_io_eof
+rb_io_fdopen
+rb_io_flush
+rb_io_fptr_finalize
+rb_io_fread
+rb_io_fwrite
+rb_io_get_write_io
+rb_io_getbyte
+rb_io_gets
+rb_io_mode_enc
+rb_io_mode_flags
+rb_io_modenum_flags
+rb_io_print
+rb_io_printf
+rb_io_puts
+rb_io_read_check
+rb_io_read_pending
+rb_io_set_nonblock
+rb_io_stdio_file
+rb_io_synchronized
+rb_io_taint_check
+rb_io_unbuffered
+rb_io_ungetc
+rb_io_wait_readable
+rb_io_wait_writable
+rb_io_write
+rb_is_class_id
+rb_is_const_id
+rb_is_instance_id
+rb_is_junk_id
+rb_is_local_id
+rb_iseq_build_for_ruby2cext
+rb_iseq_compile
+rb_iseq_compile_with_option
+rb_iseq_eval
+rb_iseq_new
+rb_iseq_new_with_bopt
+rb_iseq_new_with_opt
+rb_iter_break
+rb_iterate
+rb_iterator_p
+rb_iv_get
+rb_iv_set
+rb_ivar_defined
+rb_ivar_foreach
+rb_ivar_get
+rb_ivar_set
+rb_jump_tag
+rb_last_status_get
+rb_last_status_set
+rb_lastline_get
+rb_lastline_set
+rb_ll2inum
+rb_load
+rb_load_fail
+rb_load_file
+rb_load_path DATA
+rb_load_protect
+rb_loaderror
+rb_local_defined
+rb_locale_charmap
+rb_mComparable DATA
+rb_mEnumerable DATA
+rb_mErrno DATA
+rb_mFConst DATA
+rb_mFileTest DATA
+rb_mGC DATA
+rb_mKernel DATA
+rb_mMath DATA
+rb_mPrecision DATA
+rb_mProcGID DATA
+rb_mProcID_Syscall DATA
+rb_mProcUID DATA
+rb_mProcess DATA
+rb_make_exception
+rb_make_metaclass
+rb_mark_end_proc
+rb_mark_generic_ivar
+rb_mark_generic_ivar_tbl
+rb_mark_hash
+rb_mark_set
+rb_mark_source_filename
+rb_mark_tbl
+rb_marshal_define_compat
+rb_marshal_dump
+rb_marshal_load
+rb_match_busy
+rb_mem_clear
+rb_memcicmp
+rb_memcmp
+rb_memerror
+rb_memhash
+rb_memsearch
+rb_method_body
+rb_method_boundp
+rb_method_call
+rb_method_node
+rb_mod_ancestors
+rb_mod_attr
+rb_mod_class_variables
+rb_mod_const_at
+rb_mod_const_missing
+rb_mod_const_of
+rb_mod_constants
+rb_mod_include_p
+rb_mod_included_modules
+rb_mod_init_copy
+rb_mod_method_arity
+rb_mod_module_eval
+rb_mod_module_exec
+rb_mod_name
+rb_mod_remove_const
+rb_mod_remove_cvar
+rb_module_new
+rb_mutex_lock
+rb_mutex_locked_p
+rb_mutex_new
+rb_mutex_sleep
+rb_mutex_trylock
+rb_mutex_unlock
+rb_name_class
+rb_name_error
+rb_need_block
+rb_newobj
+rb_node_arity
+rb_node_newnode
+rb_notimplement
+rb_num2dbl
+rb_num2fix
+rb_num2int
+rb_num2ll
+rb_num2long
+rb_num2ull
+rb_num2ulong
+rb_num_coerce_bin
+rb_num_coerce_cmp
+rb_num_coerce_relop
+rb_num_zerodiv
+rb_obj_alloc
+rb_obj_as_string
+rb_obj_call_init
+rb_obj_class
+rb_obj_classname
+rb_obj_clone
+rb_obj_dup
+rb_obj_encoding
+rb_obj_equal
+rb_obj_freeze
+rb_obj_frozen_p
+rb_obj_id
+rb_obj_infect
+rb_obj_init_copy
+rb_obj_instance_eval
+rb_obj_instance_exec
+rb_obj_instance_variables
+rb_obj_is_instance_of
+rb_obj_is_kind_of
+rb_obj_is_proc
+rb_obj_method
+rb_obj_method_arity
+rb_obj_not
+rb_obj_not_equal
+rb_obj_public_method
+rb_obj_remove_instance_variable
+rb_obj_respond_to
+rb_obj_singleton_methods
+rb_obj_taint
+rb_obj_tainted
+rb_obj_tap
+rb_obj_untaint
+rb_origenviron DATA
+rb_output_fs DATA
+rb_output_rs DATA
+rb_p
+rb_parse_in_eval
+rb_parser_append_print
+rb_parser_calloc
+rb_parser_compile_cstr
+rb_parser_compile_file
+rb_parser_compile_string
+rb_parser_encoding
+rb_parser_end_seen_p
+rb_parser_free
+rb_parser_get_yydebug
+rb_parser_malloc
+rb_parser_new
+rb_parser_realloc
+rb_parser_set_yydebug
+rb_parser_while_loop
+rb_path2class
+rb_path_check
+rb_path_end
+rb_path_last_separator
+rb_path_next
+rb_path_skip_prefix
+rb_print_undef
+rb_proc_alloc
+rb_proc_arity
+rb_proc_call
+rb_proc_exec
+rb_proc_exec_n
+rb_proc_location
+rb_proc_new
+rb_proc_times
+rb_progname DATA
+rb_prohibit_interrupt DATA
+rb_protect
+rb_provide
+rb_provided
+rb_quad_pack
+rb_quad_unpack
+rb_raise
+rb_raise_jump
+rb_range_beg_len
+rb_range_new
+rb_read_check
+rb_read_pending
+rb_reg_adjust_startpos
+rb_reg_check_preprocess
+rb_reg_compile
+rb_reg_eqq
+rb_reg_last_match
+rb_reg_match
+rb_reg_match2
+rb_reg_match_last
+rb_reg_match_post
+rb_reg_match_pre
+rb_reg_new
+rb_reg_nth_defined
+rb_reg_nth_match
+rb_reg_options
+rb_reg_quote
+rb_reg_regcomp
+rb_reg_regsub
+rb_reg_search
+rb_register_mark_object
+rb_register_transcoder
+rb_remove_event_hook
+rb_remove_method
+rb_require
+rb_require_safe
+rb_rescue
+rb_rescue2
+rb_reserved_word
+rb_respond_to
+rb_rs DATA
+rb_rubylevel_errinfo
+rb_safe_level
+rb_scan_args
+rb_secure
+rb_secure_update
+rb_set_class_path
+rb_set_end_proc
+rb_set_errinfo
+rb_set_safe_level
+rb_set_safe_level_force
+rb_signal_exec
+rb_singleton_class
+rb_singleton_class_attached
+rb_singleton_class_clone
+rb_source_filename
+rb_sourcefile
+rb_sourceline
+rb_spawn
+rb_sprintf
+rb_stderr DATA
+rb_stdin DATA
+rb_stdout DATA
+rb_str2cstr
+rb_str2inum
+rb_str_append
+rb_str_associate
+rb_str_associated
+rb_str_buf_append
+rb_str_buf_cat
+rb_str_buf_cat2
+rb_str_buf_new
+rb_str_buf_new2
+rb_str_cat
+rb_str_cat2
+rb_str_cmp
+rb_str_comparable
+rb_str_concat
+rb_str_dump
+rb_str_dup
+rb_str_dup_frozen
+rb_str_equal
+rb_str_format
+rb_str_free
+rb_str_freeze
+rb_str_hash
+rb_str_inspect
+rb_str_intern
+rb_str_length
+rb_str_locktmp
+rb_str_modify
+rb_str_new
+rb_str_new2
+rb_str_new3
+rb_str_new4
+rb_str_new5
+rb_str_ord
+rb_str_plus
+rb_str_resize
+rb_str_set_len
+rb_str_setter
+rb_str_shared_replace
+rb_str_split
+rb_str_sublen
+rb_str_subseq
+rb_str_substr
+rb_str_succ
+rb_str_times
+rb_str_tmp_new
+rb_str_to_dbl
+rb_str_to_inum
+rb_str_to_str
+rb_str_unlocktmp
+rb_str_update
+rb_string_value
+rb_string_value_cstr
+rb_string_value_ptr
+rb_struct_alloc
+rb_struct_alloc_noinit
+rb_struct_aref
+rb_struct_aset
+rb_struct_define
+rb_struct_define_without_accessor
+rb_struct_getmember
+rb_struct_initialize
+rb_struct_iv_get
+rb_struct_members
+rb_struct_new
+rb_struct_s_members
+rb_sym_all_symbols
+rb_sym_to_s
+rb_symname_p
+rb_sys_fail
+rb_sys_warning
+rb_syswait
+rb_tainted_str_new
+rb_tainted_str_new2
+rb_thread_add_event_hook
+rb_thread_alloc
+rb_thread_alone
+rb_thread_atfork
+rb_thread_blocking_region
+rb_thread_create
+rb_thread_create_timer_thread
+rb_thread_critical DATA
+rb_thread_current
+rb_thread_current_status
+rb_thread_execute_interrupts
+rb_thread_fd_close
+rb_thread_fd_writable
+rb_thread_group
+rb_thread_kill
+rb_thread_list
+rb_thread_local_aref
+rb_thread_local_aset
+rb_thread_main
+rb_thread_mark
+rb_thread_method_id_and_class
+rb_thread_polling
+rb_thread_recycle_stack_release
+rb_thread_remove_event_hook
+rb_thread_reset_timer_thread
+rb_thread_run
+rb_thread_schedule
+rb_thread_select
+rb_thread_signal_exit
+rb_thread_signal_raise
+rb_thread_sleep
+rb_thread_sleep_forever
+rb_thread_start_timer_thread
+rb_thread_stop
+rb_thread_stop_timer_thread
+rb_thread_synchronize
+rb_thread_terminate_all
+rb_thread_wait_fd
+rb_thread_wait_for
+rb_thread_wakeup
+rb_throw
+rb_throw_obj
+rb_time_interval
+rb_time_nano_new
+rb_time_new
+rb_time_succ
+rb_time_timespec
+rb_time_timeval
+rb_to_encoding
+rb_to_encoding_index
+rb_to_id
+rb_to_int
+rb_trap_exec
+rb_trap_exit
+rb_trap_immediate DATA
+rb_trap_pending DATA
+rb_trap_restore_mask
+rb_uint2big
+rb_uint2inum
+rb_ull2inum
+rb_undef
+rb_undef_alloc_func
+rb_undef_method
+rb_utf8_encoding
+rb_uv_to_utf8
+rb_vm_bugreport
+rb_vm_call_cfunc
+rb_vm_cfunc_funcall_p
+rb_vm_change_state
+rb_vm_check_redefinition_opt_method
+rb_vm_mark
+rb_vm_set_eval_stack
+rb_vm_set_top_stack
+rb_vm_top_self
+rb_vsprintf
+rb_w32_argv_size
+rb_w32_aspawn
+rb_w32_asynchronize
+rb_w32_close
+rb_w32_closedir
+rb_w32_cmdvector
+rb_w32_fclose
+rb_w32_fdclr
+rb_w32_fdisset
+rb_w32_fdset
+rb_w32_free_environ
+rb_w32_get_environ
+rb_w32_get_osfhandle
+rb_w32_getc
+rb_w32_getcwd
+rb_w32_getenv
+rb_w32_getpid
+rb_w32_is_socket
+rb_w32_isatty
+rb_w32_join_argv
+rb_w32_mkdir
+rb_w32_opendir
+rb_w32_osid
+rb_w32_pipe_exec
+rb_w32_putc
+rb_w32_read
+rb_w32_readdir
+rb_w32_rename
+rb_w32_rewinddir
+rb_w32_rmdir
+rb_w32_seekdir
+rb_w32_sleep
+rb_w32_snprintf
+rb_w32_socketpair
+rb_w32_spawn
+rb_w32_stat
+rb_w32_stati64
+rb_w32_strerror
+rb_w32_sysinit
+rb_w32_telldir
+rb_w32_times
+rb_w32_unlink
+rb_w32_utime
+rb_w32_vsnprintf
+rb_w32_wait_events
+rb_w32_wait_events_blocking
+rb_w32_write
+rb_waitpid
+rb_warn
+rb_warning
+rb_with_disable_interrupt
+rb_write_error
+rb_write_error2
+rb_yard_abort_transaction
+rb_yard_begin_transaction
+rb_yard_commit_transaction
+rb_yard_configure
+rb_yard_fetch
+rb_yard_id
+rb_yard_marshal_dump
+rb_yard_saved_object
+rb_yield
+rb_yield_splat
+rb_yield_values
+rb_yield_values2
+read=rb_w32_read
+read_data
+read_fd_set DATA
+recv@16=_rb_w32_recv@16
+recvfrom@24=_rb_w32_recvfrom@24
+rename=rb_w32_rename
+replay_modification_result
+rmdir=rb_w32_rmdir
+round
+ruby_add_suffix
+ruby_brace_expand
+ruby_brace_glob
+ruby_cleanup
+ruby_copyright DATA
+ruby_current_thread DATA
+ruby_current_vm DATA
+ruby_debug DATA
+ruby_debug_breakpoint
+ruby_debug_print_id
+ruby_debug_print_indent
+ruby_debug_print_node
+ruby_debug_print_v
+ruby_debug_print_value
+ruby_default_signal
+ruby_description DATA
+ruby_digitmap DATA
+ruby_dln_librefs DATA
+ruby_error_print
+ruby_exec_node
+ruby_finalize
+ruby_gc_debug_indent DATA
+ruby_gc_stress DATA
+ruby_getcwd
+ruby_glob
+ruby_incpush
+ruby_incpush_expand
+ruby_init
+ruby_init_ext
+ruby_init_loadpath
+ruby_init_stack
+ruby_inplace_mode DATA
+ruby_iseq_disasm
+ruby_iseq_disasm_insn
+ruby_native_thread_p
+ruby_node_name
+ruby_options
+ruby_patchlevel DATA
+ruby_platform DATA
+ruby_process_options
+ruby_prog_init
+ruby_push_include
+ruby_qsort
+ruby_release_date DATA
+ruby_run_node
+ruby_scan_hex
+ruby_scan_oct
+ruby_script
+ruby_set_argv
+ruby_set_stack_size
+ruby_setenv
+ruby_show_copyright
+ruby_show_version
+ruby_sig_finalize
+ruby_signal_name
+ruby_stack_check
+ruby_stack_length
+ruby_stop
+ruby_strdup
+ruby_strtod
+ruby_suppress_tracing
+ruby_sysinit
+ruby_unsetenv
+ruby_verbose DATA
+ruby_version DATA
+ruby_vm_global_state_version DATA
+ruby_vm_redefined_flag DATA
+ruby_xcalloc
+ruby_xfree
+ruby_xmalloc
+ruby_xmalloc2
+ruby_xrealloc
+ruby_xrealloc2
+ruby_yyparse
+select@20=_rb_w32_select@20
+send@16=_rb_w32_send@16
+sendto@24=_rb_w32_sendto@24
+setgid
+sethostent
+setkey
+setnetent
+setprotoent
+setservent
+setsockopt@20=_rb_w32_setsockopt@20
+setuid
+shutdown@8=_rb_w32_shutdown@8
+socket@12=_rb_w32_socket@12
+socketpair=rb_w32_socketpair
+ss_apply_all_case_fold
+st_add_direct
+st_cleanup_safe
+st_clear
+st_copy
+st_delete
+st_delete_safe
+st_foreach
+st_foreach_safe
+st_free_table
+st_get_key
+st_init_numtable
+st_init_numtable_with_size
+st_init_strcasetable
+st_init_strcasetable_with_size
+st_init_strtable
+st_init_strtable_with_size
+st_init_table
+st_init_table_with_size
+st_insert
+st_lookup
+st_numcmp
+st_numhash
+st_reverse_foreach
+stack_dump_each
+stack_dump_th
+start_storage
+stat=rb_w32_stat
+stati64=rb_w32_stati64
+strcasecmp=msvcrt.stricmp
+strerror=rb_w32_strerror
+string_to_key
+strlcat
+strlcpy
+strncasecmp=msvcrt.strnicmp
+symCFUNC DATA
+symIFUNC DATA
+sysstack_error DATA
+thgroup_enclose
+thread_dump_regs
+thread_dump_state
+thread_recycle_stack_count DATA
+thread_recycle_stack_slot DATA
+thread_reset_raised
+thread_set_raised
+times=rb_w32_times
+truncate
+unlink=rb_w32_unlink
+utime=rb_w32_utime
+vm_backtrace
+vm_call0
+vm_cfp_svar_get
+vm_cfp_svar_set
+vm_collect_local_variables_in_heap
+vm_cref_push
+vm_eval
+vm_eval_body
+vm_get_cbase
+vm_get_cref
+vm_get_sourceline
+vm_invoke_proc
+vm_jump_tag_but_local_jump
+vm_localjump_error
+vm_make_env_object
+vm_make_jump_tag_but_local_jump
+vm_make_proc
+vm_set_special_cref
+vm_stack_dump_raw
+vm_stack_to_heap
+vm_yield
+vsnprintf=rb_w32_vsnprintf
+wait
+waitpid
+write=rb_w32_write
+write_data
+yard_apply_modification
+yard_apply_modification_sync
+yard_create_thread
+yard_create_thread_lock
+yard_db_dir DATA
+yard_db_file_name DATA
+yard_dequeue_modification
+yard_enqueue_modification
+yard_enqueue_single_modification
+yard_fetch_global_variable
+yard_fetch_stored_object
+yard_fetch_transaction
+yard_get_current_thread
+yard_get_object_by_yid
+yard_init_storage_worker
+yard_initialize_safe_op_queue
+yard_local_cookie
+yard_local_load_global_variable
+yard_local_load_object
+yard_local_persist_objects
+yard_local_store_object
+yard_master
+yard_master_cookie
+yard_net_configure
+yard_net_dispatch_global_variable_definition
+yard_net_dispatch_object_fetch
+yard_net_initialize_clients
+yard_net_initialize_network_dispatcher
+yard_net_initialize_server_listener
+yard_net_next_id
+yard_net_on_data DATA
+yard_net_pause_receiver
+yard_net_process_until_reply
+yard_net_resume_receiver
+yard_net_send_message
+yard_network_dispatcher
+yard_object_modification
+yard_pause_storage_worker
+yard_pop_transaction
+yard_push_transaction
+yard_remote_assign_to_global_variable
+yard_remote_fetch_object
+yard_reset_object_cache
+yard_resolve_stub
+yard_resume_storage_worker
+yard_revert_object_sync
+yard_set_object_by_yid
+yard_settings_by_cookie
+yard_setup_storage_settings
+yard_start_storage_worker
+yard_storage_method DATA
+yard_thread_lock_end
+yard_thread_lock_start
+yard_thread_sleep
+yard_txn_enqueue_modification
+yard_type_persistable
+yard_update_target_object
+yid_to_key
